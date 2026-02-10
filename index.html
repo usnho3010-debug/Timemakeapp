@@ -72,6 +72,42 @@ canvas{
 </head>
 
 <body>
+<div id="licenseBox" style="
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.75);
+  backdrop-filter:blur(6px);
+  z-index:10000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+">
+  <div style="
+    background:#fff;
+    width:90%;
+    max-width:360px;
+    padding:20px;
+    border-radius:16px;
+    box-shadow:0 20px 40px rgba(0,0,0,.4);
+  ">
+    <h3 style="margin:0 0 10px">🔐 Kích hoạt Timemark</h3>
+    <input id="keyInput" placeholder="Nhập key bản quyền"
+      style="width:100%;padding:10px;border-radius:10px;border:1px solid #ccc">
+    <button onclick="activateKey()" style="
+      width:100%;
+      margin-top:12px;
+      padding:10px;
+      border-radius:10px;
+      border:none;
+      background:#ff9800;
+      font-weight:600;
+      cursor:pointer;
+    ">Kích hoạt</button>
+
+    <div id="keyMsg" style="margin-top:10px;color:#c00;font-size:14px"></div>
+  </div>
+</div>
+
 <div class="bg"></div>
 <div class="petals" id="petals"></div>
 
@@ -121,6 +157,10 @@ canvas{
 </div>
 
 <div class="controls">
+<label>🔑 License key</label>
+<input type="text" id="licenseKey" placeholder="Nhập key kích hoạt">
+<button onclick="activateKey()">Kích hoạt</button>
+
 <label>Thêm ảnh check-in</label>
 <input type="file" id="imageInput" accept="image/*">
 
@@ -156,8 +196,52 @@ canvas{
 </div>
 
 <script>
+const API_URL = "DÁN_URL_GOOGLE_SCRIPT_CỦA_BẠN_VÀO_ĐÂY";
 const c=document.getElementById("c");
 const ctx=c.getContext("2d");
+<script>
+function getDeviceId(){
+  let id = localStorage.getItem("tm_device");
+  if(!id){
+    id = crypto.randomUUID();
+    localStorage.setItem("tm_device", id);
+  }
+  return id;
+}
+</script>
+function activateKey(){
+  const key = document.getElementById("keyInput").value.trim();
+  const msg = document.getElementById("keyMsg");
+
+  if(!key){
+    msg.innerText = "❌ Vui lòng nhập key";
+    return;
+  }
+
+  msg.innerText = "⏳ Đang kiểm tra...";
+
+  fetch(API_URL,{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({
+      key:key,
+      device:getDeviceId()
+    })
+  })
+  .then(r=>r.json())
+  .then(res=>{
+    if(res.status==="ok"){
+      localStorage.setItem("tm_license", JSON.stringify(res));
+      localStorage.setItem("tm_key", key);
+      document.getElementById("licenseBox").style.display="none";
+    }else{
+      msg.innerText = "❌ " + res.message;
+    }
+  })
+  .catch(()=>{
+    msg.innerText = "❌ Không kết nối được server";
+  });
+}
 
 function isOn(id){
  const el=document.getElementById(id);
@@ -453,6 +537,88 @@ function hideToast(){
 window.addEventListener("load", ()=>{
   setTimeout(showToast, 300);
 });
+window.addEventListener("load", ()=>{
+  const lic = localStorage.getItem("tm_license");
+  if(lic){
+    document.getElementById("licenseBox").style.display="none";
+  }
+});
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbxotIvG0KGhX7brR8UgqJrRRsCYTdMWEF8TTP3SBzdZq3-I7MeP__YhjvRUJ2-xDlSd_g/exec";
+
+/* tạo ID thiết bị */
+function getDeviceId(){
+  let id = localStorage.getItem("timemark_device_id");
+  if(!id){
+    id = crypto.randomUUID();
+    localStorage.setItem("timemark_device_id", id);
+  }
+  return id;
+}
+
+/* kích hoạt key */
+function activateKey(){
+  const key = document.getElementById("licenseKey").value.trim();
+  if(!key) return alert("Vui lòng nhập key");
+
+  const device = getDeviceId();
+
+  fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({ key, device })
+  })
+  .then(r=>r.json())
+  .then(res=>{
+    if(res.status==="ok"){
+      localStorage.setItem("timemark_license", key);
+      alert("✅ Kích hoạt thành công");
+      location.reload();
+    }else{
+      alert("❌ " + res.message);
+    }
+  })
+  .catch(()=>{
+    alert("Không kết nối được server");
+  });
+}
+
+/* kiểm tra khi mở app */
+function checkLicense(){
+  const key = localStorage.getItem("timemark_license");
+  if(!key){
+    lockApp();
+    return;
+  }
+
+  fetch(API_URL, {
+    method:"POST",
+    body: JSON.stringify({ key, device:getDeviceId() })
+  })
+  .then(r=>r.json())
+  .then(res=>{
+    if(res.status!=="ok"){
+      lockApp();
+      alert("Key không hợp lệ hoặc đã dùng trên máy khác");
+    }
+  })
+  .catch(lockApp);
+}
+
+/* khoá app */
+function lockApp(){
+  document.body.innerHTML = `
+    <div style="padding:40px;text-align:center">
+      <h2>🔒 Timemark bị khoá</h2>
+      <p>Vui lòng nhập key hợp lệ để sử dụng</p>
+      <input id="licenseKey" placeholder="Nhập key">
+      <br><br>
+      <button onclick="activateKey()">Kích hoạt</button>
+    </div>
+  `;
+}
+
+checkLicense();
+</script>
 
 </script>
 </body>
