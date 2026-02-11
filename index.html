@@ -138,6 +138,25 @@ canvas{
   transform:scale(.96);
 }
 
+/* ===== POPUP MAX ===== */
+.notifyMax{
+  background:linear-gradient(180deg,#ffffff,#fff8e1);
+  border-radius:24px;
+  text-align:center;
+}
+
+.shieldIcon{
+  font-size:44px;
+  margin-bottom:6px;
+  animation:popShield .5s ease;
+}
+
+@keyframes popShield{
+  from{transform:scale(.5);opacity:0}
+  to{transform:scale(1);opacity:1}
+}
+
+
 </style>
 </head>
 
@@ -160,12 +179,14 @@ canvas{
 </div>
 <!-- THÔNG BÁO -->
 <div class="lock" id="notifyBox" style="display:none;">
-  <div class="lockBox">
-    <h3 id="notifyTitle">Thông báo</h3>
-    <p id="notifyMsg">Nội dung</p>
-    <button onclick="closeNotify()">OK</button>
+  <div class="lockBox notifyMax">
+    <div class="shieldIcon">🛡</div>
+    <h3 id="notifyTitle"></h3>
+    <p id="notifyMsg"></p>
+    <button onclick="closeNotify()">Bắt đầu sử dụng</button>
   </div>
 </div>
+
 
 <div class="app">
 <header class="header">
@@ -270,17 +291,24 @@ document.getElementById("loadingBlur").style.display = "block";
   .then(d=>{
 
     if(d.status==="ok"){
-      localStorage.setItem("tm_active","1");
-      localStorage.setItem("tm_key", key);
-      showNotify("Thành công","Kích hoạt thành công");
-      location.reload();
-    }else{
-      btn.disabled = false;
-      btn.innerText = "Kích hoạt";
-document.getElementById("loadingBlur").style.display = "none";
 
-      showNotify("Kích hoạt thất bại", d.message || "Key không hợp lệ");
-    }
+  localStorage.setItem("tm_active","1");
+  localStorage.setItem("tm_key", key);
+
+  startConfetti(); // ⭐ hiệu ứng LEVEL MAX
+
+  showNotify(
+    "🎉 Kích hoạt thành công!",
+`🔑 Loại key: ${d.type}
+📅 Ngày kích hoạt: ${d.startDate}
+⏳ Hết hạn: ${d.expireDate}
+🔥 Còn lại: ${d.daysLeft} ngày
+
+👉 Nhấn OK để bắt đầu sử dụng Timemark`
+  );
+
+}
+
 
   })
   .catch(()=>{
@@ -313,7 +341,28 @@ function showNotify(title,msg){
 
 function closeNotify(){
   document.getElementById("notifyBox").style.display = "none";
+  location.reload();
 }
+
+
+/* ===== CONFETTI MAX ===== */
+function startConfetti(){
+  const box=document.getElementById("petals");
+
+  for(let i=0;i<20;i++){
+    const p=document.createElement("div");
+    p.innerText="🎉";
+    p.style.position="fixed";
+    p.style.left=Math.random()*100+"vw";
+    p.style.top="-10px";
+    p.style.zIndex="99999";
+    p.style.animation=`fall ${4+Math.random()*4}s linear`;
+    document.body.appendChild(p);
+
+    setTimeout(()=>p.remove(),5000);
+  }
+}
+
 
 
 
