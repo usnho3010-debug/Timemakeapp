@@ -248,19 +248,39 @@ function autoCheckKey(){
   .then(r=>r.json())
   .then(d=>{
 
+    console.log("AUTO CHECK:", d);
+
+    // ❌ key lỗi
     if(d.status !== "ok"){
       localStorage.removeItem("tm_active");
       localStorage.removeItem("tm_key");
 
       document.getElementById("lock").style.display = "flex";
+
       showNotify("Thông báo hệ thống", d.message || "Key không hợp lệ");
+      return;
     }
+
+    // ⭐ HIỆN POPUP HẠN KEY MỖI LẦN MỞ APP
+    const type   = d.type || "--";
+    const expire = d.expireDate || "--";
+    const left   = d.daysLeft || "--";
+
+    showNotify(
+      "🛡 Thông tin bản quyền",
+`🔑 Loại key: ${type}
+🔥 Còn lại: ${left} ngày
+⏳ Hết hạn: ${expire}
+
+👉 Chúc bạn sử dụng Timemark hiệu quả`
+    );
 
   })
   .catch(()=>{
     console.log("Không check được key (offline)");
   });
 }
+
 
 /* ===== KÍCH HOẠT ===== */
 function activate(){
@@ -646,5 +666,4 @@ window.onload=()=>{
 </script>
 </body>
 </html>
-
 
