@@ -88,6 +88,14 @@ canvas{
     </p>
   </div>
 </div>
+<!-- THÔNG BÁO -->
+<div class="lock" id="notifyBox" style="display:none;">
+  <div class="lockBox">
+    <h3 id="notifyTitle">Thông báo</h3>
+    <p id="notifyMsg">Nội dung</p>
+    <button onclick="closeNotify()">OK</button>
+  </div>
+</div>
 
 <div class="app">
 <header class="header">
@@ -133,15 +141,40 @@ function getDevice(){
   return d;
 }
 
-/* ===== KIỂM TRA KÍCH HOẠT ===== */
-if(localStorage.getItem("tm_active")==="1"){
-  document.getElementById("lock").style.display="none";
+/* ===== AUTO CHECK KEY ===== */
+function autoCheckKey(){
+
+  const savedKey = localStorage.getItem("tm_key");
+  if(!savedKey) return;
+
+  fetch(API_URL,{
+    method:"POST",
+    body:JSON.stringify({
+      key: savedKey,
+      device: getDevice()
+    })
+  })
+  .then(r=>r.json())
+  .then(d=>{
+
+    if(d.status !== "ok"){
+      localStorage.removeItem("tm_active");
+      localStorage.removeItem("tm_key");
+
+      document.getElementById("lock").style.display = "flex";
+      showNotify("Thông báo hệ thống", d.message || "Key không hợp lệ");
+    }
+
+  })
+  .catch(()=>{
+    console.log("Không check được key (offline)");
+  });
 }
 
 /* ===== KÍCH HOẠT ===== */
 function activate(){
   const key = keyInput.value.trim();
-  if(!key) return alert("Nhập key");
+  if(!key) return showNotify("Thông báo","Nhập key");
 
   fetch(API_URL,{
     method:"POST",
@@ -152,18 +185,39 @@ function activate(){
   })
   .then(r=>r.json())
   .then(d=>{
+
     if(d.status==="ok"){
       localStorage.setItem("tm_active","1");
-      alert("Kích hoạt thành công");
+      localStorage.setItem("tm_key", key);
+      showNotify("Thành công","Kích hoạt thành công");
       location.reload();
     }else{
-      alert(d.message || "Key không hợp lệ");
+      showNotify("Kích hoạt thất bại", d.message || "Key không hợp lệ");
     }
+
   })
   .catch(()=>{
-    alert("Không kết nối được server");
+    showNotify("Lỗi kết nối","Không kết nối được server");
   });
 }
+
+/* ===== KIỂM TRA KÍCH HOẠT ===== */
+if(localStorage.getItem("tm_active")==="1"){
+  document.getElementById("lock").style.display="none";
+  autoCheckKey();
+}
+/* ===== THÔNG BÁO UI ===== */
+function showNotify(title,msg){
+  document.getElementById("notifyTitle").innerText = title;
+  document.getElementById("notifyMsg").innerText = msg;
+  document.getElementById("notifyBox").style.display = "flex";
+}
+
+function closeNotify(){
+  document.getElementById("notifyBox").style.display = "none";
+}
+
+
 
 /* ===== APP CHÍNH ===== */
 const c=document.getElementById("c");
