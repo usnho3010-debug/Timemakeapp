@@ -62,19 +62,88 @@ canvas{
   justify-content:center;
 }
 .lockBox{
-  background:#fff;
-  padding:20px;
-  border-radius:14px;
+  background:rgba(255,255,255,0.95);
+  backdrop-filter:blur(18px);
+  padding:26px 22px;
+  border-radius:20px;
   width:90%;
   max-width:360px;
   text-align:center;
+  box-shadow:0 25px 60px rgba(0,0,0,.35);
+  animation:popIn .35s ease;
+}
+
+@keyframes popIn{
+  from{
+    transform:scale(.9);
+    opacity:0;
+  }
+  to{
+    transform:scale(1);
+    opacity:1;
+  }
 }
 .lockBox h3{margin-top:0}
+/* LOADING BLUR */
+.loadingBlur{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.4);
+  backdrop-filter:blur(6px);
+  z-index:9998;
+  display:none;
+}
+/* RUNG NHẸ KHI SAI KEY */
+.shake{
+  animation:shake .35s;
+}
+
+@keyframes shake{
+  0%{transform:translateX(0)}
+  25%{transform:translateX(-6px)}
+  50%{transform:translateX(6px)}
+  75%{transform:translateX(-4px)}
+  100%{transform:translateX(0)}
+}
+
+.lockBox input{
+  background:#fff;
+  border:2px solid #ffe082;
+  border-radius:14px;
+  padding:12px;
+  font-size:15px;
+  transition:.25s;
+}
+
+.lockBox input:focus{
+  border-color:#ff9800;
+  box-shadow:0 0 0 3px rgba(255,193,7,.25);
+}
+.lockBox button{
+  background:linear-gradient(135deg,#ff9800,#ffc107);
+  color:#fff;
+  font-weight:bold;
+  border-radius:14px;
+  padding:12px;
+  margin-top:8px;
+  box-shadow:0 10px 20px rgba(0,0,0,.25);
+  transition:.25s;
+}
+
+.lockBox button:hover{
+  transform:translateY(-2px);
+}
+
+.lockBox button:active{
+  transform:scale(.96);
+}
+
 </style>
 </head>
 
 <body>
 <div class="bg"></div>
+<div id="loadingBlur" class="loadingBlur"></div>
 <div class="petals" id="petals"></div>
 
 <!-- KHOÁ APP -->
@@ -82,7 +151,8 @@ canvas{
   <div class="lockBox">
     <h3>🔐 Kích hoạt Timemark</h3>
     <input id="keyInput" placeholder="Nhập key của bạn">
-    <button onclick="activate()">Kích hoạt</button>
+    <button id="btnActivate" onclick="activate()">Kích hoạt</button>
+
     <p style="font-size:12px;opacity:.7">
       1 key chỉ dùng cho 1 thiết bị
     </p>
@@ -173,8 +243,21 @@ function autoCheckKey(){
 
 /* ===== KÍCH HOẠT ===== */
 function activate(){
+
   const key = keyInput.value.trim();
-  if(!key) return showNotify("Thông báo","Nhập key");
+  const btn = document.getElementById("btnActivate");
+
+  // ❗ kiểm tra trước khi bật loading
+  if(!key){
+    showNotify("Thông báo","Nhập key");
+    return;
+  }
+
+  // ⭐ bật loading sau khi đã có key
+  btn.disabled = true;
+  btn.innerText = "⏳ Đang kiểm tra...";
+document.getElementById("loadingBlur").style.display = "block";
+
 
   fetch(API_URL,{
     method:"POST",
@@ -192,14 +275,21 @@ function activate(){
       showNotify("Thành công","Kích hoạt thành công");
       location.reload();
     }else{
+      btn.disabled = false;
+      btn.innerText = "Kích hoạt";
+document.getElementById("loadingBlur").style.display = "none";
+
       showNotify("Kích hoạt thất bại", d.message || "Key không hợp lệ");
     }
 
   })
   .catch(()=>{
+    btn.disabled = false;
+    btn.innerText = "Kích hoạt";
     showNotify("Lỗi kết nối","Không kết nối được server");
   });
 }
+
 
 /* ===== KIỂM TRA KÍCH HOẠT ===== */
 if(localStorage.getItem("tm_active")==="1"){
@@ -211,6 +301,14 @@ function showNotify(title,msg){
   document.getElementById("notifyTitle").innerText = title;
   document.getElementById("notifyMsg").innerText = msg;
   document.getElementById("notifyBox").style.display = "flex";
+
+  // ⭐ rung nhẹ màn hình nhập key nếu đang mở
+  const box = document.querySelector("#lock .lockBox");
+  if(box){
+    box.classList.remove("shake");
+    void box.offsetWidth;
+    box.classList.add("shake");
+  }
 }
 
 function closeNotify(){
