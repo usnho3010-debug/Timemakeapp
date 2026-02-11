@@ -220,7 +220,7 @@ canvas{
 
 <script>
 /* ===== CONFIG ===== */
-const API_URL = "https://script.google.com/macros/s/AKfycbymRE_t1aiqaMohzGBFzSE2y3X-nojz8SgWLjB6FO5wnsmSdETbMxMcYeS6diiZ00eY4Q/
+const API_URL = "https://script.google.com/macros/s/AKfycbymRE_t1aiqaMohzGBFzSE2y3X-nojz8SgWLjB6FO5wnsmSdETbMxMcYeS6diiZ00eY4Q/exec";
 /* ===== DEVICE ID ===== */
 function getDevice(){
   let d = localStorage.getItem("tm_device");
@@ -311,27 +311,39 @@ document.getElementById("loadingBlur").style.display = "block";
   .then(r=>r.json())
   .then(d=>{
 
-    if(d.status==="ok"){
+  console.log("API DATA:", d);
 
-  localStorage.setItem("tm_active","1");
-  localStorage.setItem("tm_key", key);
+  if(d.status==="ok"){
 
-  startConfetti(); // ⭐ hiệu ứng LEVEL MAX
+    localStorage.setItem("tm_active","1");
+    localStorage.setItem("tm_key", key);
 
-  showNotify(
-    "🎉 Kích hoạt thành công!",
+    document.getElementById("loadingBlur").style.display="none";
+    btn.disabled=false;
+    btn.innerText="Kích hoạt";
+
+    startConfetti();
+
+    showNotify(
+      "🎉 Kích hoạt thành công!",
 `🔑 Loại key: ${d.type}
 📅 Ngày kích hoạt: ${d.startDate}
 ⏳ Hết hạn: ${d.expireDate}
-🔥 Còn lại: ${d.daysLeft} ngày
+🔥 Còn lại: ${d.daysLeft} ngày`
+    );
 
-👉 Nhấn OK để bắt đầu sử dụng Timemark`
-  );
+  }else{
 
-}
+    // ⭐ FIX TREO APP
+    document.getElementById("loadingBlur").style.display="none";
+    btn.disabled=false;
+    btn.innerText="Kích hoạt";
 
+    showNotify("Kích hoạt thất bại", d.message || "Key không hợp lệ");
 
-  })
+  }
+
+})
   .catch(()=>{
     btn.disabled = false;
     btn.innerText = "Kích hoạt";
@@ -666,6 +678,7 @@ window.onload=()=>{
 </script>
 </body>
 </html>
+
 
 
 
