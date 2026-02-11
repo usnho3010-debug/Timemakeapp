@@ -221,7 +221,8 @@ canvas{
 <script>
 /* ===== CONFIG ===== */
 const API_URL = "https://script.google.com/macros/s/AKfycbymRE_t1aiqaMohzGBFzSE2y3X-nojz8SgWLjB6FO5wnsmSdETbMxMcYeS6diiZ00eY4Q/exec";
-
+// ⭐ reset chống spam mỗi lần load app
+localStorage.removeItem("tm_notify_once");
 /* ===== DEVICE ID ===== */
 function getDevice(){
   let d = localStorage.getItem("tm_device");
@@ -256,7 +257,9 @@ function autoCheckKey(){
       localStorage.removeItem("tm_key");
 
       document.getElementById("lock").style.display = "flex";
-
+     // ⭐ chống spam popup
+if(localStorage.getItem("tm_notify_once")==="1") return;
+localStorage.setItem("tm_notify_once","1");
       showNotify("Thông báo hệ thống", d.message || "Key không hợp lệ");
       return;
     }
@@ -361,7 +364,6 @@ function showNotify(title,msg){
 
 function closeNotify(){
   document.getElementById("notifyBox").style.display = "none";
-  location.reload();
 }
 
 
@@ -666,4 +668,5 @@ window.onload=()=>{
 </script>
 </body>
 </html>
+
 
