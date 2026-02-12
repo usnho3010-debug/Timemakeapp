@@ -291,18 +291,20 @@ if(d.status !== "ok"){
 if(localStorage.getItem("tm_notify_once")==="1") return;
 localStorage.setItem("tm_notify_once","1");
 
-const type   = d.type || "--";
+const level  = d.level || "--";
 const expire = d.expireDate || "--";
 const left   = d.daysLeft || "--";
 
 showNotify(
   "🛡 Thông tin bản quyền",
-`🔑 Loại key: ${type}
+`🔑 Gói: ${level}
+📦 Thời hạn: ${type}
 🔥 Còn lại: ${left} ngày
 ⏳ Hết hạn: ${expire}
 
 👉 Chúc bạn sử dụng Timemark hiệu quả`
 );
+
 })
 .catch(()=>{
   console.log("Không check được key (offline)");
@@ -377,7 +379,7 @@ document.getElementById("loadingBlur").style.display = "block";
 
     showNotify(
       "🎉 Kích hoạt thành công!",
-`🔑 Loại key: ${d.type}
+`🔑 Gói: ${d.level} (${d.type})
 📅 Ngày kích hoạt: ${d.startDate}
 ⏳ Hết hạn: ${d.expireDate}
 🔥 Còn lại: ${d.daysLeft} ngày`
