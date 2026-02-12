@@ -183,7 +183,8 @@ canvas{
     <div class="shieldIcon">🛡</div>
     <h3 id="notifyTitle"></h3>
     <p id="notifyMsg"></p>
-    <button id="notifyBtn" onclick="closeNotify()">Bắt đầu sử dụng</button>
+    <button id="notifyBtn">Bắt đầu sử dụng</button>
+
 
   </div>
 </div>
@@ -387,23 +388,26 @@ function showNotify(title,msg){
 
   if(isKeyError){
 
-    // 👉 CHỈ ĐỔI TEXT NÚT (KHÔNG AUTO MỞ ZALO)
+    // 👉 đổi nút sang liên hệ admin
     btn.innerText = "📞 Liên hệ Admin";
 
-    btn.onclick = ()=>{
-      window.open("https://zalo.me/0334690556","_blank"); // thay số zalo bạn
+    btn.onclick = function(){
+      window.open("https://zalo.me/0334690556","_blank");
     };
 
   }else{
 
+    // 👉 popup bình thường
     btn.innerText = "Bắt đầu sử dụng";
-    btn.onclick = closeNotify;
 
+    btn.onclick = function(){
+      closeNotify();
+    };
   }
 
-  // rung nhẹ
-  const box = document.querySelector("#lock .lockBox");
-  if(box){
+  // ⭐ rung nhẹ (chỉ khi đang ở màn nhập key)
+  const box = document.getElementById("lock");
+if(box && box.style.display!=="none"){
     box.classList.remove("shake");
     void box.offsetWidth;
     box.classList.add("shake");
@@ -411,6 +415,10 @@ function showNotify(title,msg){
 }
 
 
+
+function closeNotify(){
+  document.getElementById("notifyBox").style.display = "none";
+}
 
 /* ===== CONFETTI MAX ===== */
 function startConfetti(){
