@@ -253,6 +253,22 @@ function autoCheckKey(){
   .then(d=>{
 
     console.log("AUTO CHECK:", d);
+// ⭐ BẢO TRÌ REALTIME PRO
+if(d.maintenance === true){
+
+  localStorage.removeItem("tm_active");
+  localStorage.removeItem("tm_key");
+
+  document.getElementById("lock").style.display="flex";
+
+  showNotify(
+    "⚠️ Hệ thống đang bảo trì",
+    "Vui lòng quay lại sau ít phút"
+  );
+
+  return;
+}
+
 
    // ❌ key lỗi / hết hạn / bị khóa
 if(d.status !== "ok"){
