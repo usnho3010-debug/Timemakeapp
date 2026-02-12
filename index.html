@@ -253,7 +253,7 @@ function autoCheckKey(){
   .then(d=>{
 
     console.log("AUTO CHECK:", d);
-// ⭐ BẢO TRÌ REALTIME PRO
+/* ===== BẢO TRÌ REALTIME ===== */
 if(d.maintenance === true){
 
   localStorage.removeItem("tm_active");
@@ -262,12 +262,13 @@ if(d.maintenance === true){
   document.getElementById("lock").style.display="flex";
 
   showNotify(
-    "⚠️ Hệ thống đang bảo trì",
-    "Vui lòng quay lại sau ít phút"
+    "🛠 Hệ thống bảo trì",
+    "Timemark đang được nâng cấp.\nVui lòng quay lại sau ít phút."
   );
 
   return;
 }
+
 
 
    // ❌ key lỗi / hết hạn / bị khóa
