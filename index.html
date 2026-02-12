@@ -223,6 +223,9 @@ canvas{
 <script>
 /* ===== CONFIG ===== */
 const API_URL = "https://script.google.com/macros/s/AKfycbymRE_t1aiqaMohzGBFzSE2y3X-nojz8SgWLjB6FO5wnsmSdETbMxMcYeS6diiZ00eY4Q/exec";
+
+let keyWatcher = null;
+
 /* ===== DEVICE ID ===== */
 function getDevice(){
   let d = localStorage.getItem("tm_device");
@@ -290,6 +293,22 @@ showNotify(
 }
 
 
+function startRealtimeCheck(){
+
+  // ❌ nếu đã chạy rồi thì không tạo thêm
+  if(keyWatcher) return;
+
+  // check ngay lập tức
+  autoCheckKey();
+
+  // check lại mỗi 5 giây
+  keyWatcher = setInterval(()=>{
+    autoCheckKey();
+  },5000);
+
+}
+
+
 
 /* ===== KÍCH HOẠT ===== */
 function activate(){
@@ -323,12 +342,19 @@ document.getElementById("loadingBlur").style.display = "block";
 
   if(d.status==="ok"){
 
-    localStorage.setItem("tm_active","1");
-    localStorage.setItem("tm_key", key);
-document.getElementById("lock").style.display="none";
-    document.getElementById("loadingBlur").style.display="none";
-    btn.disabled=false;
-    btn.innerText="Kích hoạt";
+  localStorage.setItem("tm_active","1");
+  localStorage.setItem("tm_key", key);
+
+  document.getElementById("lock").style.display="none";
+
+  // ⭐ BẮT ĐẦU REALTIME CHECK NGAY SAU KHI ACTIVE
+  startRealtimeCheck();
+
+
+  document.getElementById("loadingBlur").style.display="none";
+  btn.disabled=false;
+  btn.innerText="Kích hoạt";
+
 
     startConfetti();
 
@@ -360,12 +386,16 @@ document.getElementById("lock").style.display="none";
 }
 
 
-if(localStorage.getItem("tm_active")==="1"){
-  document.getElementById("lock").style.display="none";
 
-  autoCheckKey(); // lần đầu
-  setInterval(autoCheckKey,30000); // ⭐ check lại mỗi 30 giây
-}
+
+// ⭐ CHECK NGAY KHI APP ACTIVE LẠI
+document.addEventListener("visibilitychange",()=>{
+
+  if(!document.hidden){
+    autoCheckKey();
+  }
+
+});
 
 
 /* ===== THÔNG BÁO UI ===== */
@@ -717,7 +747,13 @@ window.onload=()=>{
       box.appendChild(p);
     }
   });
+if(localStorage.getItem("tm_active")==="1"){
+    document.getElementById("lock").style.display="none";
+    startRealtimeCheck();
+  }
+
 };
+
 </script>
 </body>
 </html>
