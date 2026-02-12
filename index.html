@@ -422,7 +422,7 @@ function showNotify(title,msg){
     btn.innerText = "📞 Liên hệ Admin";
 
     btn.onclick = function(){
-      window.open("https://zalo.me/0818078995","_blank");
+      window.open("https://zalo.me/0334690556","_blank");
     };
 
   }else{
@@ -734,7 +734,12 @@ function download(){
 
 /* HOA RƠI */
 window.onload=()=>{
+
+  // ⭐ RESET POPUP HẠN KEY MỖI LẦN MỞ APP
+  localStorage.removeItem("tm_notify_once");
+
   const box=document.getElementById("petals");
+
   ["🌸","🌼","🌺"].forEach(()=>{
     for(let i=0;i<8;i++){
       const p=document.createElement("div");
@@ -747,17 +752,18 @@ window.onload=()=>{
       box.appendChild(p);
     }
   });
-if(localStorage.getItem("tm_active")==="1"){
+
+  if(localStorage.getItem("tm_active")==="1"){
     document.getElementById("lock").style.display="none";
     startRealtimeCheck();
   }
 
 };
 
+
 </script>
 </body>
 </html>
-
 
 
 
