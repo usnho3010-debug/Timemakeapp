@@ -183,7 +183,8 @@ canvas{
     <div class="shieldIcon">🛡</div>
     <h3 id="notifyTitle"></h3>
     <p id="notifyMsg"></p>
-    <button onclick="closeNotify()">Bắt đầu sử dụng</button>
+    <button id="notifyBtn" onclick="closeNotify()">Bắt đầu sử dụng</button>
+
   </div>
 </div>
 
@@ -368,11 +369,39 @@ if(localStorage.getItem("tm_active")==="1"){
 
 /* ===== THÔNG BÁO UI ===== */
 function showNotify(title,msg){
+
   document.getElementById("notifyTitle").innerText = title;
   document.getElementById("notifyMsg").innerText = msg;
   document.getElementById("notifyBox").style.display = "flex";
 
-  // ⭐ rung nhẹ màn hình nhập key nếu đang mở
+  const btn = document.getElementById("notifyBtn");
+
+  // ⭐ nhận diện lỗi key
+  const isKeyError =
+      title.includes("Thông báo hệ thống") ||
+      title.includes("Kích hoạt thất bại") ||
+      msg.includes("không tồn tại") ||
+      msg.includes("thiết bị khác") ||
+      msg.includes("hết hạn") ||
+      msg.includes("bị khóa");
+
+  if(isKeyError){
+
+    // 👉 CHỈ ĐỔI TEXT NÚT (KHÔNG AUTO MỞ ZALO)
+    btn.innerText = "📞 Liên hệ Admin";
+
+    btn.onclick = ()=>{
+      window.open("https://zalo.me/0334690556","_blank"); // thay số zalo bạn
+    };
+
+  }else{
+
+    btn.innerText = "Bắt đầu sử dụng";
+    btn.onclick = closeNotify;
+
+  }
+
+  // rung nhẹ
   const box = document.querySelector("#lock .lockBox");
   if(box){
     box.classList.remove("shake");
@@ -381,9 +410,6 @@ function showNotify(title,msg){
   }
 }
 
-function closeNotify(){
-  document.getElementById("notifyBox").style.display = "none";
-}
 
 
 /* ===== CONFETTI MAX ===== */
