@@ -84,33 +84,43 @@ button:hover{opacity:.9}
 <div class="container">
 
   <div class="card basic">
-    <h3>BASIC</h3>
-    <div class="price">
-      • 1 ngày — 39.000đ<br>
-      • 7 ngày — 199.000đ
-    </div>
-    <button onclick="buy('basic')">MUA NGAY</button>
+    <h3>⚡ 1 NGÀY</h3>
+    <div class="price">39.000đ</div>
+    <button onclick="buy('basic1')">MUA NGAY</button>
+  </div>
+
+  <div class="card basic">
+    <h3>🌱 7 NGÀY</h3>
+    <div class="price">199.000đ</div>
+    <button onclick="buy('basic7')">MUA NGAY</button>
   </div>
 
   <div class="card pro">
-    <h3>PRO ⭐</h3>
-    <div class="price">
-      • 1 tháng — 699.000đ<br>
-      • 3 tháng — 1.399.000đ
-    </div>
-    <button onclick="buy('pro')">MUA NGAY</button>
+    <h3>⭐ 1 THÁNG</h3>
+    <div class="price">699.000đ</div>
+    <button onclick="buy('pro1')">MUA NGAY</button>
+  </div>
+
+  <div class="card pro">
+    <h3>🔥 3 THÁNG</h3>
+    <div class="price">1.399.000đ</div>
+    <button onclick="buy('pro3')">MUA NGAY</button>
   </div>
 
   <div class="card premium">
-    <h3>PREMIUM 🚀</h3>
-    <div class="price">
-      • 6 tháng — 2.199.000đ<br>
-      • Vĩnh viễn — 2.999.000đ
-    </div>
-    <button onclick="buy('premium')">MUA NGAY</button>
+    <h3>🚀 6 THÁNG</h3>
+    <div class="price">2.199.000đ</div>
+    <button onclick="buy('pre6')">MUA NGAY</button>
+  </div>
+
+  <div class="card premium">
+    <h3>💎 VĨNH VIỄN</h3>
+    <div class="price">2.999.000đ</div>
+    <button onclick="buy('lifetime')">MUA NGAY</button>
   </div>
 
 </div>
+
 
 <div class="footer">
 Mỗi key dùng cho 1 thiết bị
@@ -118,19 +128,52 @@ Mỗi key dùng cho 1 thiết bị
 
 <script>
 
-/* ===== DEMO THANH TOÁN ===== */
-/* Khi MoMo API có rồi mình sẽ thay đoạn này */
-
 function buy(plan){
 
-  alert(
-    "Bạn đã chọn gói: " + plan +
-    "\n(Chờ tích hợp MoMo API)"
-  );
+  const email = prompt("Nhập Gmail để nhận KEY:");
+
+  // ❌ chưa nhập email
+  if(!email){
+    alert("Bạn chưa nhập Gmail");
+    return;
+  }
+
+  // ❌ email sai
+  if(!email.includes("@")){
+    alert("Email không hợp lệ");
+    return;
+  }
+
+  // ⭐ gọi Apps Script tạo key (TEST MODE)
+  fetch("https://script.google.com/macros/s/AKfycbwDRIc7_SZC2nx1TlYRU-taklWN57lDF9aXLHt2LE3MrLDEu-7Q0inQQlvYd6MKplhw9Q/exec",{
+    method:"POST",
+    body:JSON.stringify({
+      action:"createPayment",
+      plan:plan,
+      email:email
+    })
+  })
+  .then(r=>r.json())
+  .then(res=>{
+
+    if(res.status==="ok"){
+
+      alert(
+        "🎉 TẠO KEY THÀNH CÔNG!\n\n"+
+        "KEY: "+res.key+
+        "\n\nEmail sẽ được gửi tự động."
+      );
+
+    }else{
+      alert("Tạo key thất bại");
+    }
+
+  });
 
 }
 
 </script>
+
 
 </body>
 </html>
