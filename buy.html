@@ -128,7 +128,39 @@ Mỗi key dùng cho 1 thiết bị
 
 <script>
 
+/* =========================
+   ⭐ CHECK LOCK BUY PAGE
+========================= */
+
+fetch("https://script.google.com/macros/s/AKfycbwDRIc7_SZC2nx1TlYRU-taklWN57lDF9aXLHt2LE3MrLDEu-7Q0inQQlvYd6MKplhw9Q/exec",{
+  method:"POST",
+  headers:{
+    "Content-Type":"application/json"
+  },
+  body:JSON.stringify({
+    action:"checkLock"
+  })
+})
+.then(r=>r.json())
+.then(res=>{
+
+  if(res.lock === true){
+
+  // khóa nút
+  document.querySelectorAll("button").forEach(btn=>{
+    btn.disabled = true;
+    btn.innerText = "🔒 Đang cập nhật thanh toán";
+    btn.style.opacity = "0.5";
+    btn.style.cursor = "not-allowed";
+  });
+
+  // ⭐ hiện toast thông báo
+  document.getElementById("toastLock").style.display="block";
+}
+});
+
 function buy(plan){
+
 
   const email = prompt("Nhập Gmail để nhận KEY:");
 
@@ -173,6 +205,22 @@ function buy(plan){
 }
 
 </script>
+<div id="toastLock" style="
+position:fixed;
+top:20px;
+left:50%;
+transform:translateX(-50%);
+background:rgba(0,0,0,0.85);
+color:#fff;
+padding:12px 18px;
+border-radius:10px;
+font-size:14px;
+display:none;
+z-index:9999;
+backdrop-filter:blur(8px);
+">
+🔒 Trang mua key đang tạm khóa
+</div>
 
 
 </body>
