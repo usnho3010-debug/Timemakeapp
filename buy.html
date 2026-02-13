@@ -61,7 +61,6 @@ button.locked{
   text-align:center;
   margin-top:18px;
   font-size:14px;
-  opacity:.9;
   color:#ffd54f;
 }
 
@@ -124,36 +123,51 @@ Mỗi key dùng cho 1 thiết bị
 
 <script>
 
+/* ======================================
+   ⚠️ DÁN ĐÚNG WEB APP URL MỚI NHẤT
+====================================== */
 const API="https://script.google.com/macros/s/AKfycbwDRIc7_SZC2nx1TlYRU-taklWN57lDF9aXLHt2LE3MrLDEu-7Q0inQQlvYd6MKplhw9Q/exec";
 
-/* =========================
-   ⭐ CHECK LOCK PRO VERSION
-========================= */
+/* ======================================
+   🔒 CHECK LOCK REALTIME
+====================================== */
 
-fetch(API,{
-  method:"POST",
-  headers:{ "Content-Type":"application/json" },
-  body:JSON.stringify({action:"checkLock"})
-})
-.then(r=>r.json())
-.then(res=>{
+window.addEventListener("load",()=>{
 
-  if(res.lock===true){
+  fetch(API,{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({action:"checkLock"})
+  })
+  .then(r=>r.json())
+  .then(res=>{
 
-    document.querySelectorAll("button").forEach(btn=>{
-      btn.classList.add("locked");
-    });
+    console.log("LOCK STATUS:",res);
 
-    document.getElementById("lockNotice").innerHTML=
-      "🔒 Hệ thống thanh toán MoMo đang nâng cấp. Tạm thời không thể mua key.";
+    if(res.lock===true){
 
-  }
+      document.getElementById("lockNotice").innerText=
+      "🔒 Hệ thống đang nâng cấp thanh toán MoMo. Tạm thời khóa mua key.";
+
+      document.querySelectorAll("button").forEach(btn=>{
+        btn.classList.add("locked");
+        btn.innerText="🔒 Đang bảo trì";
+        btn.disabled=true;
+      });
+
+    }
+
+  })
+  .catch(err=>{
+    console.log("Không check được lock:",err);
+  });
 
 });
 
-/* =========================
+
+/* ======================================
    ⭐ MUA KEY
-========================= */
+====================================== */
 
 function buy(plan){
 
@@ -180,13 +194,11 @@ function buy(plan){
   })
   .then(r=>r.json())
   .then(res=>{
-
     if(res.status==="ok"){
       alert("🎉 TẠO KEY THÀNH CÔNG!\n\nKEY: "+res.key);
     }else{
       alert("Tạo key thất bại");
     }
-
   });
 
 }
