@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TIMEMARK PRICING</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  background:linear-gradient(135deg,#0b1d3a,#4a00e0,#8e2de2);
+  min-height:100vh;
+  color:#fff;
+}
+
+.header{
+  text-align:center;
+  padding:30px 10px;
+}
+
+.container{
+  max-width:900px;
+  margin:auto;
+  display:flex;
+  gap:20px;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+
+.card{
+  width:260px;
+  border-radius:18px;
+  padding:22px;
+  backdrop-filter:blur(16px);
+  background:rgba(255,255,255,0.08);
+  box-shadow:0 20px 40px rgba(0,0,0,.4);
+  text-align:center;
+  transition:.3s;
+}
+.card:hover{
+  transform:translateY(-8px);
+}
+
+.basic{border:2px solid #00e676;}
+.pro{border:2px solid #00b0ff;}
+.premium{border:2px solid #ff00ff;}
+
+h3{margin-top:0}
+
+.price{
+  font-size:18px;
+  margin:10px 0;
+  line-height:1.8;
+}
+
+button{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  font-weight:bold;
+  cursor:pointer;
+  background:linear-gradient(135deg,#ff6a00,#ff9800);
+  color:#fff;
+}
+button:hover{opacity:.9}
+
+.footer{
+  text-align:center;
+  margin-top:30px;
+  opacity:.7;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <h1>🚀 TIMEMARK PREMIUM</h1>
+  <p>Chọn gói bản quyền phù hợp</p>
+</div>
+
+<div class="container">
+
+  <div class="card basic">
+    <h3>BASIC</h3>
+    <div class="price">
+      • 1 ngày — 39.000đ<br>
+      • 7 ngày — 199.000đ
+    </div>
+    <button onclick="buy('basic')">MUA NGAY</button>
+  </div>
+
+  <div class="card pro">
+    <h3>PRO ⭐</h3>
+    <div class="price">
+      • 1 tháng — 699.000đ<br>
+      • 3 tháng — 1.399.000đ
+    </div>
+    <button onclick="buy('pro')">MUA NGAY</button>
+  </div>
+
+  <div class="card premium">
+    <h3>PREMIUM 🚀</h3>
+    <div class="price">
+      • 6 tháng — 2.199.000đ<br>
+      • Vĩnh viễn — 2.999.000đ
+    </div>
+    <button onclick="buy('premium')">MUA NGAY</button>
+  </div>
+
+</div>
+
+<div class="footer">
+Mỗi key dùng cho 1 thiết bị
+</div>
+
+<script>
+
+/* ===== DEMO THANH TOÁN ===== */
+/* Khi MoMo API có rồi mình sẽ thay đoạn này */
+
+function buy(plan){
+
+  alert(
+    "Bạn đã chọn gói: " + plan +
+    "\n(Chờ tích hợp MoMo API)"
+  );
+
+}
+
+</script>
+
+</body>
+</html>
