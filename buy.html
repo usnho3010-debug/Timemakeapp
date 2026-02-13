@@ -184,30 +184,38 @@ function buy(plan){
 
   const price = priceMap[plan];
 
-  // ⭐ TẠO ORDERID TẠM
-  const orderId = "TM-"+plan+"-"+encodeURIComponent(email);
+  // ⭐ FORMAT MỚI: 4 SỐ NGẪU NHIÊN + TM + PLAN
+  const orderId =
+    Math.floor(1000 + Math.random()*9000) + "TM" + plan;
 
-
-  // ⭐ LINK QR VIETQR (KHÔNG SỬA LOGIC APP SCRIPT)
   const qrLink =
-"https://img.vietqr.io/image/970415-999986016868-compact2.png?amount="
-+price+
-"&addInfo="+encodeURIComponent(orderId)+
-"&accountName="+encodeURIComponent("TIMEMARK");
+  "https://img.vietqr.io/image/970415-104882732682-compact2.png?amount="
+  +price+
+  "&addInfo="+encodeURIComponent(orderId)+
+  "&accountName="+encodeURIComponent("TIMEMARK");
 
-
-  // ⭐ HIỆN QR
   const open = confirm(
     "Quét QR để thanh toán "+price.toLocaleString()+"đ\n\n"+
-    "Sau khi chuyển khoản xong bấm OK để nhận KEY."
+    "Nội dung: "+orderId+"\n\n"+
+    "Sau khi chuyển khoản xong hệ thống sẽ tự gửi KEY qua email."
   );
 
   if(!open) return;
 
   window.open(qrLink,"_blank");
 
+  // ⭐ LƯU EMAIL CHỜ THANH TOÁN (ĐỂ SCRIPT TÌM)
+  fetch("https://script.google.com/macros/s/AKfycbwDRIc7_SZC2nx1TlYRU-taklWN57lDF9aXLHt2LE3MrLDEu-7Q0inQQlvYd6MKplhw9Q/exec",{
+    method:"POST",
+    body:JSON.stringify({
+      action:"createPayment",
+      plan:"basic1", // ⭐ tạo dòng chờ, plan thật sẽ được webhook ghi đè
+      email:email
+    })
+  });
 
 }
+
 
 
 </script>
