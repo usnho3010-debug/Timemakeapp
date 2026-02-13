@@ -132,15 +132,13 @@ Mỗi key dùng cho 1 thiết bị
    ⭐ CHECK LOCK BUY PAGE
 ========================= */
 
-fetch("https://script.google.com/macros/s/AKfycbwDRIc7_SZC2nx1TlYRU-taklWN57lDF9aXLHt2LE3MrLDEu-7Q0inQQlvYd6MKplhw9Q/exec",{
+fetch("LINK_WEBAPP",{
   method:"POST",
-  headers:{
-    "Content-Type":"application/json"
-  },
   body:JSON.stringify({
     action:"checkLock"
   })
 })
+
 .then(r=>r.json())
 .then(res=>{
 
