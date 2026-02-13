@@ -175,6 +175,11 @@ canvas{
     <p style="font-size:12px;opacity:.7">
       1 key chỉ dùng cho 1 thiết bị
     </p>
+<button onclick="openBuyPage()" 
+style="margin-top:6px;background:#ff6a00;color:#fff;font-weight:bold;">
+🛒 Mua key Timemark
+</button>
+
   </div>
 </div>
 <!-- THÔNG BÁO -->
@@ -750,6 +755,13 @@ function download(){
   a.href=d;a.download="timemark.png";a.click();
  }
 }
+/* ===== MỞ WEB MUA KEY ===== */
+function openBuyPage(){
+  window.open(
+    "https://LINK-WEB-BAN-KEY-CUA-BAN",
+    "_blank"
+  );
+}
 
 /* HOA RƠI */
 window.onload=()=>{
@@ -783,7 +795,6 @@ window.onload=()=>{
 </script>
 </body>
 </html>
-
 
 
 
