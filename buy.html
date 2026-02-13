@@ -14,7 +14,10 @@ body{
   color:#fff;
 }
 
-.header{text-align:center;padding:30px 10px;}
+.header{
+  text-align:center;
+  padding:30px 10px;
+}
 
 .container{
   max-width:900px;
@@ -33,11 +36,23 @@ body{
   background:rgba(255,255,255,0.08);
   box-shadow:0 20px 40px rgba(0,0,0,.4);
   text-align:center;
+  transition:.3s;
+}
+.card:hover{
+  transform:translateY(-8px);
 }
 
 .basic{border:2px solid #00e676;}
 .pro{border:2px solid #00b0ff;}
 .premium{border:2px solid #ff00ff;}
+
+h3{margin-top:0}
+
+.price{
+  font-size:18px;
+  margin:10px 0;
+  line-height:1.8;
+}
 
 button{
   width:100%;
@@ -48,23 +63,14 @@ button{
   cursor:pointer;
   background:linear-gradient(135deg,#ff6a00,#ff9800);
   color:#fff;
-  transition:.2s;
 }
+button:hover{opacity:.9}
 
-button.locked{
-  opacity:.35;
-  pointer-events:none;
-  filter:grayscale(1);
-}
-
-.notice{
+.footer{
   text-align:center;
-  margin-top:18px;
-  font-size:14px;
-  color:#ffd54f;
+  margin-top:30px;
+  opacity:.7;
 }
-
-.footer{text-align:center;margin-top:30px;opacity:.7;}
 </style>
 </head>
 
@@ -77,45 +83,44 @@ button.locked{
 
 <div class="container">
 
-<div class="card basic">
-<h3>⚡ 1 NGÀY</h3>
-<div>39.000đ</div>
-<button onclick="buy('basic1')">MUA NGAY</button>
+  <div class="card basic">
+    <h3>⚡ 1 NGÀY</h3>
+    <div class="price">39.000đ</div>
+    <button onclick="buy('basic1')">MUA NGAY</button>
+  </div>
+
+  <div class="card basic">
+    <h3>🌱 7 NGÀY</h3>
+    <div class="price">199.000đ</div>
+    <button onclick="buy('basic7')">MUA NGAY</button>
+  </div>
+
+  <div class="card pro">
+    <h3>⭐ 1 THÁNG</h3>
+    <div class="price">699.000đ</div>
+    <button onclick="buy('pro1')">MUA NGAY</button>
+  </div>
+
+  <div class="card pro">
+    <h3>🔥 3 THÁNG</h3>
+    <div class="price">1.399.000đ</div>
+    <button onclick="buy('pro3')">MUA NGAY</button>
+  </div>
+
+  <div class="card premium">
+    <h3>🚀 6 THÁNG</h3>
+    <div class="price">2.199.000đ</div>
+    <button onclick="buy('pre6')">MUA NGAY</button>
+  </div>
+
+  <div class="card premium">
+    <h3>💎 VĨNH VIỄN</h3>
+    <div class="price">2.999.000đ</div>
+    <button onclick="buy('lifetime')">MUA NGAY</button>
+  </div>
+
 </div>
 
-<div class="card basic">
-<h3>🌱 7 NGÀY</h3>
-<div>199.000đ</div>
-<button onclick="buy('basic7')">MUA NGAY</button>
-</div>
-
-<div class="card pro">
-<h3>⭐ 1 THÁNG</h3>
-<div>699.000đ</div>
-<button onclick="buy('pro1')">MUA NGAY</button>
-</div>
-
-<div class="card pro">
-<h3>🔥 3 THÁNG</h3>
-<div>1.399.000đ</div>
-<button onclick="buy('pro3')">MUA NGAY</button>
-</div>
-
-<div class="card premium">
-<h3>🚀 6 THÁNG</h3>
-<div>2.199.000đ</div>
-<button onclick="buy('pre6')">MUA NGAY</button>
-</div>
-
-<div class="card premium">
-<h3>💎 VĨNH VIỄN</h3>
-<div>2.999.000đ</div>
-<button onclick="buy('lifetime')">MUA NGAY</button>
-</div>
-
-</div>
-
-<div id="lockNotice" class="notice"></div>
 
 <div class="footer">
 Mỗi key dùng cho 1 thiết bị
@@ -123,69 +128,25 @@ Mỗi key dùng cho 1 thiết bị
 
 <script>
 
-/* ======================================
-   ⚠️ DÁN ĐÚNG WEB APP URL MỚI NHẤT
-====================================== */
-const API="https://script.google.com/macros/s/AKfycbwDRIc7_SZC2nx1TlYRU-taklWN57lDF9aXLHt2LE3MrLDEu-7Q0inQQlvYd6MKplhw9Q/exec";
-
-/* ======================================
-   🔒 CHECK LOCK REALTIME
-====================================== */
-
-window.addEventListener("load",()=>{
-
-  fetch(API,{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({action:"checkLock"})
-  })
-  .then(r=>r.json())
-  .then(res=>{
-
-    console.log("LOCK STATUS:",res);
-
-    if(res.lock===true){
-
-      document.getElementById("lockNotice").innerText=
-      "🔒 Hệ thống đang nâng cấp thanh toán MoMo. Tạm thời khóa mua key.";
-
-      document.querySelectorAll("button").forEach(btn=>{
-        btn.classList.add("locked");
-        btn.innerText="🔒 Đang bảo trì";
-        btn.disabled=true;
-      });
-
-    }
-
-  })
-  .catch(err=>{
-    console.log("Không check được lock:",err);
-  });
-
-});
-
-
-/* ======================================
-   ⭐ MUA KEY
-====================================== */
-
 function buy(plan){
 
   const email = prompt("Nhập Gmail để nhận KEY:");
 
+  // ❌ chưa nhập email
   if(!email){
     alert("Bạn chưa nhập Gmail");
     return;
   }
 
+  // ❌ email sai
   if(!email.includes("@")){
     alert("Email không hợp lệ");
     return;
   }
 
-  fetch(API,{
+  // ⭐ gọi Apps Script tạo key (TEST MODE)
+  fetch("https://script.google.com/macros/s/AKfycbwDRIc7_SZC2nx1TlYRU-taklWN57lDF9aXLHt2LE3MrLDEu-7Q0inQQlvYd6MKplhw9Q/exec",{
     method:"POST",
-    headers:{ "Content-Type":"application/json" },
     body:JSON.stringify({
       action:"createPayment",
       plan:plan,
@@ -194,17 +155,25 @@ function buy(plan){
   })
   .then(r=>r.json())
   .then(res=>{
+
     if(res.status==="ok"){
-      alert("🎉 TẠO KEY THÀNH CÔNG!\n\nKEY: "+res.key);
+
+      alert(
+        "🎉 TẠO KEY THÀNH CÔNG!\n\n"+
+        "KEY: "+res.key+
+        "\n\nEmail sẽ được gửi tự động."
+      );
+
     }else{
       alert("Tạo key thất bại");
     }
+
   });
 
 }
 
 </script>
 
+
 </body>
 </html>
-
