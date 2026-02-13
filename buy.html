@@ -121,30 +121,83 @@ button:hover{opacity:.9}
 
 </div>
 
-
 <div class="footer">
 Mỗi key dùng cho 1 thiết bị
 </div>
 
+
 <script>
+
+/* ==================================================
+   🔒 CHECK LOCK FROM APPS SCRIPT (G2 TRUE/FALSE)
+================================================== */
+
+fetch("https://script.google.com/macros/s/AKfycbwDRIc7_SZC2nx1TlYRU-taklWN57lDF9aXLHt2LE3MrLDEu-7Q0inQQlvYd6MKplhw9Q/exec",{
+  method:"POST",
+  headers:{
+    "Content-Type":"application/json"
+  },
+  body:JSON.stringify({
+    action:"checkLock"
+  })
+})
+.then(r=>r.json())
+.then(res=>{
+
+  if(res.lock === true){
+
+    document.body.insertAdjacentHTML("beforeend",`
+      <div style="
+        position:fixed;
+        inset:0;
+        background:rgba(10,10,20,0.95);
+        z-index:9999;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        text-align:center;
+        color:#fff;
+        font-family:Arial;
+      ">
+        <div style="
+          background:rgba(255,255,255,0.08);
+          padding:30px;
+          border-radius:16px;
+          backdrop-filter:blur(12px);
+          max-width:360px;
+        ">
+          <h2>🔒 Tạm khóa mua key</h2>
+          <p style="opacity:.8">
+          Hệ thống đang nâng cấp thanh toán MoMo.<br>
+          Vui lòng quay lại sau.
+          </p>
+        </div>
+      </div>
+    `);
+
+  }
+
+});
+
+
+/* ==================================================
+   🚀 MUA KEY (TEST MODE)
+================================================== */
 
 function buy(plan){
 
   const email = prompt("Nhập Gmail để nhận KEY:");
 
-  // ❌ chưa nhập email
   if(!email){
     alert("Bạn chưa nhập Gmail");
     return;
   }
 
-  // ❌ email sai
   if(!email.includes("@")){
     alert("Email không hợp lệ");
     return;
   }
 
-  // ⭐ gọi Apps Script tạo key (TEST MODE)
   fetch("https://script.google.com/macros/s/AKfycbwDRIc7_SZC2nx1TlYRU-taklWN57lDF9aXLHt2LE3MrLDEu-7Q0inQQlvYd6MKplhw9Q/exec",{
     method:"POST",
     body:JSON.stringify({
@@ -155,25 +208,16 @@ function buy(plan){
   })
   .then(r=>r.json())
   .then(res=>{
-
     if(res.status==="ok"){
-
-      alert(
-        "🎉 TẠO KEY THÀNH CÔNG!\n\n"+
-        "KEY: "+res.key+
-        "\n\nEmail sẽ được gửi tự động."
-      );
-
+      alert("🎉 TẠO KEY THÀNH CÔNG!\n\nKEY: "+res.key);
     }else{
       alert("Tạo key thất bại");
     }
-
   });
 
 }
 
 </script>
-
 
 </body>
 </html>
