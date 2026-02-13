@@ -127,6 +127,16 @@ Mỗi key dùng cho 1 thiết bị
 </div>
 
 <script>
+// ====== PRICE MAP THEO LOGIC APP HIỆN TẠI ======
+const priceMap = {
+  basic1: 39000,
+  basic7: 199000,
+  pro1: 699000,
+  pro3: 1399000,
+  pre6: 2199000,
+  lifetime: 2999000
+};
+
 
 /* =========================
    ⭐ CHECK LOCK BUY PAGE
@@ -160,48 +170,45 @@ fetch("https://script.google.com/macros/s/AKfycbwDRIc7_SZC2nx1TlYRU-taklWN57lDF9
 
 function buy(plan){
 
-
   const email = prompt("Nhập Gmail để nhận KEY:");
 
-  // ❌ chưa nhập email
   if(!email){
     alert("Bạn chưa nhập Gmail");
     return;
   }
 
-  // ❌ email sai
   if(!email.includes("@")){
     alert("Email không hợp lệ");
     return;
   }
 
-  // ⭐ gọi Apps Script tạo key (TEST MODE)
-  fetch("https://script.google.com/macros/s/AKfycbwDRIc7_SZC2nx1TlYRU-taklWN57lDF9aXLHt2LE3MrLDEu-7Q0inQQlvYd6MKplhw9Q/exec",{
-    method:"POST",
-    body:JSON.stringify({
-      action:"createPayment",
-      plan:plan,
-      email:email
-    })
-  })
-  .then(r=>r.json())
-  .then(res=>{
+  const price = priceMap[plan];
 
-    if(res.status==="ok"){
+  // ⭐ TẠO ORDERID TẠM
+  const orderId = "TM-"+plan+"-"+encodeURIComponent(email);
 
-      alert(
-        "🎉 TẠO KEY THÀNH CÔNG!\n\n"+
-        "KEY: "+res.key+
-        "\n\nEmail sẽ được gửi tự động."
-      );
 
-    }else{
-      alert("Tạo key thất bại");
-    }
+  // ⭐ LINK QR VIETQR (KHÔNG SỬA LOGIC APP SCRIPT)
+  const qrLink =
+"https://img.vietqr.io/image/970415-999986016868-compact2.png?amount="
++price+
+"&addInfo="+encodeURIComponent(orderId)+
+"&accountName="+encodeURIComponent("TIMEMARK");
 
-  });
+
+  // ⭐ HIỆN QR
+  const open = confirm(
+    "Quét QR để thanh toán "+price.toLocaleString()+"đ\n\n"+
+    "Sau khi chuyển khoản xong bấm OK để nhận KEY."
+  );
+
+  if(!open) return;
+
+  window.open(qrLink,"_blank");
+
 
 }
+
 
 </script>
 <div id="toastLock" style="
