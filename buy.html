@@ -132,31 +132,31 @@ Mỗi key dùng cho 1 thiết bị
    ⭐ CHECK LOCK BUY PAGE
 ========================= */
 
-fetch("https://script.google.com/macros/s/AKfycbwDRIc7_SZC2nx1TlYRU-taklWN57lDF9aXLHt2LE3MrLDEu-7Q0inQQlvYd6MKplhw9Q/exec
-",{
+fetch("https://script.google.com/macros/s/AKfycbwDRIc7_SZC2nx1TlYRU-taklWN57lDF9aXLHt2LE3MrLDEu-7Q0inQQlvYd6MKplhw9Q/exec",{
   method:"POST",
   body:JSON.stringify({
     action:"checkLock"
   })
 })
-
 .then(r=>r.json())
 .then(res=>{
 
-  if(res.lock === true){
+  console.log("LOCK STATUS:",res);
 
-  // khóa nút
-  document.querySelectorAll("button").forEach(btn=>{
-    btn.disabled = true;
-    btn.innerText = "🔒 Đang cập nhật thanh toán";
-    btn.style.opacity = "0.5";
-    btn.style.cursor = "not-allowed";
-  });
+  if(res.lock){
 
-  // ⭐ hiện toast thông báo
-  document.getElementById("toastLock").style.display="block";
-}
+    document.querySelectorAll("button").forEach(btn=>{
+      btn.disabled = true;
+      btn.innerText = "🔒 Đang cập nhật thanh toán";
+      btn.style.opacity = "0.5";
+      btn.style.cursor = "not-allowed";
+    });
+
+    document.getElementById("toastLock").style.display="block";
+  }
+
 });
+
 
 function buy(plan){
 
