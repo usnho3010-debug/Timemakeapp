@@ -74,7 +74,40 @@ button:hover{opacity:.9}
 </style>
 </head>
 
+
 <body>
+<div id="qrPopup" style="
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.75);
+display:none;
+align-items:center;
+justify-content:center;
+z-index:99999;
+">
+
+  <div style="
+    background:#111;
+    padding:20px;
+    border-radius:14px;
+    text-align:center;
+    width:300px;
+  ">
+
+    <h3>Quét QR để thanh toán</h3>
+
+    <img id="qrImg" src="" style="
+      width:220px;
+      border-radius:10px;
+      margin:12px 0;
+    ">
+
+    <div id="loadingText" style="opacity:.8">
+      ⏳ Đang chờ thanh toán...
+    </div>
+
+  </div>
+</div>
 
 <div class="header">
   <h1>🚀 TIMEMARK PREMIUM</h1>
@@ -127,6 +160,38 @@ Mỗi key dùng cho 1 thiết bị
 </div>
 
 <script>
+let checkTimer = null;
+function startChecking(email){
+
+  if(checkTimer) clearInterval(checkTimer);
+
+  checkTimer = setInterval(()=>{
+
+    fetch("https://script.google.com/macros/s/AKfycbwDRIc7_SZC2nx1TlYRU-taklWN57lDF9aXLHt2LE3MrLDEu-7Q0inQQlvYd6MKplhw9Q/exec",{
+      method:"POST",
+      body:JSON.stringify({
+        action:"checkPaid",
+        email:email
+      })
+    })
+    .then(r=>r.json())
+    .then(res=>{
+
+      if(res.paid){
+
+        clearInterval(checkTimer);
+
+        document.getElementById("qrPopup").style.display="none";
+
+        alert("🎉 Thanh toán thành công! KEY đã gửi về email.");
+
+      }
+
+    });
+
+  },3000);
+}
+
 // ====== PRICE MAP THEO LOGIC APP HIỆN TẠI ======
 const priceMap = {
   basic1: 39000,
@@ -168,6 +233,8 @@ fetch("https://script.google.com/macros/s/AKfycbwDRIc7_SZC2nx1TlYRU-taklWN57lDF9
 });
 
 
+
+
 function buy(plan){
 
   const email = prompt("Nhập Gmail để nhận KEY:");
@@ -184,39 +251,37 @@ function buy(plan){
 
   const price = priceMap[plan];
 
-  // ⭐ FORMAT MỚI: 4 SỐ NGẪU NHIÊN + TM + PLAN
-  const orderId =
-    Math.floor(1000 + Math.random()*9000) + "TM" + plan;
+// ⭐ Nội dung chuyển khoản mới (khớp webhook)
+const orderId = plan.toUpperCase();
 
-  const qrLink =
-  "https://img.vietqr.io/image/970415-104882732682-compact2.png?amount="
-  +price+
-  "&addInfo="+encodeURIComponent(orderId)+
-  "&accountName="+encodeURIComponent("TIMEMARK");
+const qrLink =
+"https://img.vietqr.io/image/970415-104882732682-compact2.png?amount="
++price+
+"&addInfo="+encodeURIComponent(orderId)+
+"&accountName="+encodeURIComponent("TIMEMARK");
 
-  const open = confirm(
-    "Quét QR để thanh toán "+price.toLocaleString()+"đ\n\n"+
-    "Nội dung: "+orderId+"\n\n"+
-    "Sau khi chuyển khoản xong hệ thống sẽ tự gửi KEY qua email."
-  );
+  // ⭐ HIỆN POPUP QR
+  document.getElementById("qrPopup").style.display="flex";
+  document.getElementById("qrImg").src = qrLink;
+document.getElementById("loadingText").innerText = "⏳ Đang chờ thanh toán...";
 
-  if(!open) return;
 
-  window.open(qrLink,"_blank");
-
-  // ⭐ LƯU EMAIL CHỜ THANH TOÁN (ĐỂ SCRIPT TÌM)
+  // ⭐ TẠO DÒNG CHỜ
   fetch("https://script.google.com/macros/s/AKfycbwDRIc7_SZC2nx1TlYRU-taklWN57lDF9aXLHt2LE3MrLDEu-7Q0inQQlvYd6MKplhw9Q/exec",{
-    method:"POST",
-    body:JSON.stringify({
-      action:"createPayment",
-      plan:"basic1", // ⭐ tạo dòng chờ, plan thật sẽ được webhook ghi đè
-      email:email
-    })
-  });
+  method:"POST",
+  body:JSON.stringify({
+    action:"createPending",
+    email:email
+  })
+})
+.then(()=>{
+
+  // ⭐ CHỈ CHECK SAU KHI TẠO DÒNG CHỜ XONG
+  startChecking(email);
+
+});
 
 }
-
-
 
 </script>
 <div id="toastLock" style="
