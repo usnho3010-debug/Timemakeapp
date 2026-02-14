@@ -202,3 +202,86 @@ animation:popShield .5s ease;
 from{transform:scale(.5);opacity:0}
 to{transform:scale(1);opacity:1}
 }
+/* ===================================================
+   ⭐ TIMEMARK FLOATING MENU PRO
+=================================================== */
+
+.tmFab{
+position:fixed;
+right:18px;
+bottom:90px;
+z-index:9999;
+}
+
+/* NÚT CHÍNH */
+.tmFabBtn{
+width:56px;
+height:56px;
+border-radius:50%;
+border:none;
+font-size:22px;
+cursor:pointer;
+background:linear-gradient(135deg,#ff6a00,#ff9800);
+color:#fff;
+box-shadow:0 14px 35px rgba(255,120,0,.6);
+transition:.25s;
+}
+
+.tmFabBtn:hover{
+transform:scale(1.08);
+box-shadow:0 20px 45px rgba(255,120,0,.9);
+}
+
+/* MENU CON */
+.tmFabMenu{
+position:absolute;
+bottom:70px;
+right:0;
+display:flex;
+flex-direction:column;
+gap:10px;
+opacity:0;
+pointer-events:none;
+transform:translateY(10px);
+transition:.25s;
+}
+
+.tmFabMenu.show{
+opacity:1;
+pointer-events:auto;
+transform:translateY(0);
+}
+
+/* ITEM */
+.tmFabItem{
+display:flex;
+align-items:center;
+gap:10px;
+padding:12px 14px;
+border-radius:14px;
+background:rgba(255,255,255,.12);
+backdrop-filter:blur(16px);
+color:#fff;
+text-decoration:none;
+font-weight:bold;
+box-shadow:0 10px 25px rgba(0,0,0,.35);
+transition:.25s;
+}
+
+.tmFabItem span{
+white-space:nowrap;
+}
+
+.tmFabItem:hover{
+background:rgba(255,255,255,.22);
+transform:translateX(-4px);
+}
+.tmFab{
+position:fixed;
+right:18px;
+bottom:90px;
+z-index:9999;
+touch-action:none; /* ⭐ cho phép kéo trên iOS */
+}
+
+
