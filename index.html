@@ -615,18 +615,89 @@ function isIOS(){
  return /iPhone|iPad|iPod/i.test(navigator.userAgent);
 }
 function download(){
- if(!img.src) return;
- const d=c.toDataURL("image/png");
- if(isIOS()){
-  const w=window.open();
-  w.document.write(`<img src="${d}" style="width:100%"><p>Nhấn giữ ảnh → Lưu</p>`);
- }else{
-  const a=document.createElement("a");
-  a.href=d;a.download="timemark.png";a.click();
- }
-}
-function openBuyPage(){
-  window.open("buy.html","_blank");
+
+  if(!img.src){
+    alert("Chưa chọn ảnh");
+    return;
+  }
+
+  const d = c.toDataURL("image/png");
+
+  if(isIOS()){
+
+    showNotify(
+      "info",
+      "📥 Chuẩn bị tải ảnh",
+      "Timemark sẽ mở ảnh ở tab mới.\nNhấn giữ ảnh để lưu.\nSau đó bấm Quay lại Timemark."
+    );
+
+    setTimeout(function(){
+
+      const w = window.open("");
+
+      w.document.write(`
+        <html>
+        <head>
+          <title>Timemark Download</title>
+          <meta name="viewport" content="width=device-width,initial-scale=1">
+          <style>
+            body{
+              margin:0;
+              background:#0b0b0b;
+              color:#fff;
+              font-family:Arial;
+              text-align:center;
+            }
+            .topBar{
+              position:sticky;
+              top:0;
+              padding:14px;
+              background:rgba(0,0,0,.6);
+              backdrop-filter:blur(10px);
+            }
+            .backBtn{
+              display:inline-block;
+              padding:12px 18px;
+              border-radius:14px;
+              background:linear-gradient(135deg,#ff6a00,#ff9800);
+              color:#fff;
+              font-weight:bold;
+              text-decoration:none;
+              box-shadow:0 10px 25px rgba(255,120,0,.6);
+            }
+            img{
+              width:100%;
+              margin-top:10px;
+            }
+            p{
+              opacity:.7;
+              font-size:14px;
+              padding-bottom:20px;
+            }
+          </style>
+        </head>
+        <body>
+
+          <div class="topBar">
+            <a class="backBtn" href="javascript:history.back()">🔙 Quay lại Timemark</a>
+          </div>
+
+          <img src="${d}">
+          <p>Nhấn giữ ảnh → Lưu vào thư viện</p>
+
+        </body>
+        </html>
+      `);
+
+    },600);
+
+    return;
+  }
+
+  const a = document.createElement("a");
+  a.href = d;
+  a.download = "timemark.png";
+  a.click();
 }
 
 window.onload=()=>{
