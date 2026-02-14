@@ -623,9 +623,11 @@ function download(){
 
   const d = c.toDataURL("image/png");
 
+  /* ======================
+     ⭐ iOS SAFARI
+  ====================== */
   if(isIOS()){
 
-    /* ⭐ PHẢI mở tab NGAY lập tức */
     const w = window.open("", "_blank");
 
     if(!w){
@@ -636,7 +638,7 @@ function download(){
     showNotify(
       "info",
       "📥 Hướng dẫn tải ảnh",
-      "Tab mới đã mở.\nNhấn giữ ảnh để lưu.\nSau đó bấm Quay lại."
+      "Tab ảnh đã mở. Nhấn giữ ảnh để lưu vào thư viện."
     );
 
     w.document.write(`
@@ -648,38 +650,51 @@ function download(){
           body{
             margin:0;
             background:#0b0b0b;
-            color:#fff;
             font-family:Arial;
+            color:#fff;
             text-align:center;
           }
-          .topBar{
-            padding:14px;
+
+          .header{
+            position:sticky;
+            top:0;
+            background:rgba(0,0,0,.7);
+            backdrop-filter:blur(12px);
+            padding:12px;
           }
+
           .backBtn{
             display:inline-block;
-            padding:12px 18px;
-            border-radius:14px;
+            padding:12px 20px;
+            border-radius:16px;
             background:linear-gradient(135deg,#ff6a00,#ff9800);
             color:#fff;
-            font-weight:bold;
             text-decoration:none;
+            font-weight:bold;
+            box-shadow:0 10px 30px rgba(255,120,0,.6);
           }
+
+          .guide{
+            font-size:14px;
+            opacity:.8;
+            margin-top:8px;
+          }
+
           img{
             width:100%;
-          }
-          p{
-            opacity:.7;
+            margin-top:10px;
           }
         </style>
       </head>
+
       <body>
 
-        <div class="topBar">
-          <a class="backBtn" href="javascript:history.back()">🔙 Quay lại Timemark</a>
+        <div class="header">
+          <a class="backBtn" href="https://app.timemark.io.vn">🔙 Quay lại Timemark</a>
+          <div class="guide">Nhấn giữ ảnh → Lưu vào thư viện iPhone</div>
         </div>
 
         <img src="${d}">
-        <p>Nhấn giữ ảnh → Lưu vào thư viện</p>
 
       </body>
       </html>
@@ -688,12 +703,17 @@ function download(){
     return;
   }
 
-  /* ANDROID / PC */
+  /* ======================
+     ⭐ ANDROID + PC
+  ====================== */
   const a = document.createElement("a");
   a.href = d;
   a.download = "timemark.png";
+  document.body.appendChild(a);
   a.click();
+  a.remove();
 }
+
 
 
 window.onload=()=>{
@@ -768,4 +788,5 @@ document.addEventListener("pointerup",()=>{
 
 </body>
 </html>
+
 
