@@ -1,53 +1,87 @@
 <!DOCTYPE html>
+
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>TIMEMARK PRICING</title>
 
+<!-- ⭐ DÙNG CHUNG THEME APP -->
+
+<link rel="stylesheet" href="theme-app.css?v=1">
+
 <style>
-body{
-  margin:0;
-  font-family:Arial;
-  background:linear-gradient(135deg,#0b1d3a,#4a00e0,#8e2de2);
-  min-height:100vh;
-  color:#fff;
-}
-.header{text-align:center;padding:30px 10px;}
+/* ===== STYLE RIÊNG TRANG BUY (KHÔNG ẢNH HƯỞNG APP) ===== */
+
+.header{text-align:center;padding:30px 10px;color:#fff;}
+
 .container{
-  max-width:900px;margin:auto;
-  display:flex;gap:20px;flex-wrap:wrap;
+  max-width:900px;
+  margin:auto;
+  display:flex;
+  gap:20px;
+  flex-wrap:wrap;
   justify-content:center;
 }
+
 .card{
-  width:260px;border-radius:18px;padding:22px;
+  width:260px;
+  border-radius:18px;
+  padding:22px;
   backdrop-filter:blur(16px);
   background:rgba(255,255,255,0.08);
   box-shadow:0 20px 40px rgba(0,0,0,.4);
   text-align:center;
   transition:.3s;
+  color:#fff;
 }
+
 .card:hover{transform:translateY(-8px);}
+
 .basic{border:2px solid #00e676;}
 .pro{border:2px solid #00b0ff;}
 .premium{border:2px solid #ff00ff;}
-.price{font-size:18px;margin:10px 0;line-height:1.8;}
-button{
-  width:100%;padding:12px;border:none;
-  border-radius:10px;font-weight:bold;
-  cursor:pointer;
-  background:linear-gradient(135deg,#ff6a00,#ff9800);
+
+.price{
+  font-size:18px;
+  margin:10px 0;
+  line-height:1.8;
+}
+
+.footer{
+  text-align:center;
+  margin-top:30px;
+  opacity:.7;
   color:#fff;
 }
-.footer{text-align:center;margin-top:30px;opacity:.7;}
+
+/* POPUP QR */
+#qrPopup{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.75);
+display:none;
+align-items:center;
+justify-content:center;
+z-index:99999;
+}
+
+.qrBox{
+background:#111;
+padding:20px;
+border-radius:14px;
+text-align:center;
+width:300px;
+color:#fff;
+}
 </style>
+
 </head>
 
 <body>
 
-<div id="qrPopup" style="position:fixed;inset:0;background:rgba(0,0,0,.75);
-display:none;align-items:center;justify-content:center;z-index:99999;">
-  <div style="background:#111;padding:20px;border-radius:14px;text-align:center;width:300px;">
+<div id="qrPopup">
+  <div class="qrBox">
     <h3>Quét QR để thanh toán</h3>
     <img id="qrImg" src="" style="width:220px;border-radius:10px;margin:12px 0;">
     <div id="loadingText">⏳ Đang chờ thanh toán...</div>
@@ -78,7 +112,7 @@ const priceMap = {
 };
 
 /* =========================
-   ⭐ DATA PLAN (KHÔNG CẦN SỬA GIÁ)
+   ⭐ DATA PLAN
 ========================= */
 const plans = [
  {id:"basic1", title:"⚡ 1 NGÀY", cls:"basic"},
@@ -107,7 +141,6 @@ plans.forEach(p=>{
   `;
 });
 
-
 /* =========================
    ⭐ CHECK PAID REALTIME
 ========================= */
@@ -134,7 +167,6 @@ function startChecking(email){
 
   },3000);
 }
-
 
 /* =========================
    ⭐ BUY
