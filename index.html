@@ -1,164 +1,19 @@
 <!DOCTYPE html>
+
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
 <title>Timemark Style Pro</title>
-<link rel="stylesheet" href="theme.css">
+
+<!-- ⭐ THEME TÁCH RIÊNG -->
+
+<link rel="stylesheet" href="theme-app.css">
 
 <!-- PWA -->
+
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#a80000">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-
-<style>
-body{
-  margin:0;
-  font-family:Arial;
-  background:linear-gradient(135deg,#a80000,#ff6a00,#ffd54f);
-  min-height:100vh;
-}
-.bg{position:fixed;inset:0;backdrop-filter:blur(6px);z-index:0}
-.app{position:relative;z-index:2;max-width:520px;margin:auto;padding:10px}
-
-.header{text-align:center;color:#fff}
-.controls{
-  background:rgba(255,255,255,.18);
-  backdrop-filter:blur(14px);
-  border-radius:18px;
-  padding:12px;
-  color:#fff;
-  box-shadow:0 20px 40px rgba(0,0,0,.25)
-}
-input,button,label{
-  width:100%;
-  margin:4px 0;
-  padding:8px;
-  border-radius:10px;
-  font-size:14px
-}
-button{cursor:pointer}
-canvas{
-  max-width:100%;
-  margin-top:10px;
-  border-radius:16px;
-  background:#000
-}
-
-/* HOA RƠI */
-.petals{position:fixed;inset:0;pointer-events:none;z-index:1}
-@keyframes fall{to{transform:translateY(120vh)}}
-@keyframes sway{
-  0%{margin-left:0}
-  50%{margin-left:30px}
-  100%{margin-left:0}
-}
-
-/* KHÓA APP */
-.lock{
-  position:fixed;inset:0;
-  background:rgba(0,0,0,.85);
-  z-index:9999;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.lockBox{
-  background:rgba(255,255,255,0.95);
-  backdrop-filter:blur(18px);
-  padding:26px 22px;
-  border-radius:20px;
-  width:90%;
-  max-width:360px;
-  text-align:center;
-  box-shadow:0 25px 60px rgba(0,0,0,.35);
-  animation:popIn .35s ease;
-}
-
-@keyframes popIn{
-  from{
-    transform:scale(.9);
-    opacity:0;
-  }
-  to{
-    transform:scale(1);
-    opacity:1;
-  }
-}
-.lockBox h3{margin-top:0}
-/* LOADING BLUR */
-.loadingBlur{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.4);
-  backdrop-filter:blur(6px);
-  z-index:9998;
-  display:none;
-}
-/* RUNG NHẸ KHI SAI KEY */
-.shake{
-  animation:shake .35s;
-}
-
-@keyframes shake{
-  0%{transform:translateX(0)}
-  25%{transform:translateX(-6px)}
-  50%{transform:translateX(6px)}
-  75%{transform:translateX(-4px)}
-  100%{transform:translateX(0)}
-}
-
-.lockBox input{
-  background:#fff;
-  border:2px solid #ffe082;
-  border-radius:14px;
-  padding:12px;
-  font-size:15px;
-  transition:.25s;
-}
-
-.lockBox input:focus{
-  border-color:#ff9800;
-  box-shadow:0 0 0 3px rgba(255,193,7,.25);
-}
-.lockBox button{
-  background:linear-gradient(135deg,#ff9800,#ffc107);
-  color:#fff;
-  font-weight:bold;
-  border-radius:14px;
-  padding:12px;
-  margin-top:8px;
-  box-shadow:0 10px 20px rgba(0,0,0,.25);
-  transition:.25s;
-}
-
-.lockBox button:hover{
-  transform:translateY(-2px);
-}
-
-.lockBox button:active{
-  transform:scale(.96);
-}
-
-/* ===== POPUP MAX ===== */
-.notifyMax{
-  background:linear-gradient(180deg,#ffffff,#fff8e1);
-  border-radius:24px;
-  text-align:center;
-}
-
-.shieldIcon{
-  font-size:44px;
-  margin-bottom:6px;
-  animation:popShield .5s ease;
-}
-
-@keyframes popShield{
-  from{transform:scale(.5);opacity:0}
-  to{transform:scale(1);opacity:1}
-}
-
-
-</style>
 </head>
 
 <body>
@@ -167,38 +22,39 @@ canvas{
 <div class="petals" id="petals"></div>
 
 <!-- KHOÁ APP -->
+
 <div class="lock" id="lock">
   <div class="lockBox">
     <h3>🔐 Kích hoạt Timemark</h3>
     <input id="keyInput" placeholder="Nhập key của bạn">
     <button id="btnActivate" onclick="activate()">Kích hoạt</button>
 
-    <p style="font-size:12px;opacity:.7">
-      1 key chỉ dùng cho 1 thiết bị
-    </p>
+
+
 <button onclick="openBuyPage()" 
 style="margin-top:6px;background:#ff6a00;color:#fff;font-weight:bold;">
-🛒 Mua key Timemark
-</button>
+🛒 Mua key Timemark </button>
+<p style="font-size:12px;">
+  LƯU Ý: 1 key chỉ dùng cho 1 thiết bị
+</p>
 
   </div>
 </div>
+
 <!-- THÔNG BÁO -->
+
 <div class="lock" id="notifyBox" style="display:none;">
   <div class="lockBox notifyMax">
     <div class="shieldIcon">🛡</div>
     <h3 id="notifyTitle"></h3>
     <p id="notifyMsg"></p>
     <button id="notifyBtn">Bắt đầu sử dụng</button>
-
-
   </div>
 </div>
 
-
 <div class="app">
 <header class="header">
-  <h2>🚀 TIMEMARK PREMIUM</h2>
+  <h2>📍 Timemark ver2</h2>
   <p>🌸 Chúc mừng năm mới – An khang · Thịnh vượng 🌸</p>
 </header>
 
@@ -206,24 +62,16 @@ style="margin-top:6px;background:#ff6a00;color:#fff;font-weight:bold;">
 <label>Ảnh check-in</label>
 <input type="file" id="imageInput" accept="image/*">
 
-<label>Logo</label>
-<input type="file" id="logoInput" accept="image/*">
+<label>Logo</label> <input type="file" id="logoInput" accept="image/*">
 
-<label>Giờ</label>
-<input id="time">
-<label>Ngày</label>
-<input id="date">
-<label>Thứ</label>
-<input id="weekday">
-<label>Địa chỉ</label>
-<input id="address">
+<label>Giờ</label> <input id="time"> <label>Ngày</label> <input id="date"> <label>Thứ</label> <input id="weekday"> <label>Địa chỉ</label> <input id="address">
 
-<button onclick="setNow()">⏱ Lấy giờ</button>
-<button onclick="draw()">🖊 Tạo watermark</button>
-<button onclick="download()">⬇️ Tải ảnh</button>
+<button onclick="setNow()">⏱ Lấy giờ</button> <button onclick="draw()">🖊 Tạo watermark</button> <button onclick="download()">⬇️ Tải ảnh</button>
+
 </div>
 
 <canvas id="c"></canvas>
+
 </div>
 
 <script>
@@ -275,15 +123,12 @@ if(d.maintenance === true){
   return;
 }
 
-
-
    // ❌ key lỗi / hết hạn / bị khóa
 if(d.status !== "ok"){
 
   localStorage.removeItem("tm_active");
   localStorage.removeItem("tm_key");
 
-  // ⭐ reset chống spam
   localStorage.removeItem("tm_notify_once");
 
   document.getElementById("lock").style.display = "flex";
@@ -292,8 +137,6 @@ if(d.status !== "ok"){
   return;
 }
 
-
-// ⭐ CHỈ HIỆN POPUP THÔNG TIN 1 LẦN MỖI LẦN MỞ APP
 if(localStorage.getItem("tm_notify_once")==="1") return;
 localStorage.setItem("tm_notify_once","1");
 
@@ -317,23 +160,17 @@ showNotify(
 });
 }
 
-
 function startRealtimeCheck(){
 
-  // ❌ nếu đã chạy rồi thì không tạo thêm
   if(keyWatcher) return;
 
-  // check ngay lập tức
   autoCheckKey();
 
-  // check lại mỗi 5 giây
   keyWatcher = setInterval(()=>{
     autoCheckKey();
   },5000);
 
 }
-
-
 
 /* ===== KÍCH HOẠT ===== */
 function activate(){
@@ -341,17 +178,14 @@ function activate(){
   const key = keyInput.value.trim();
   const btn = document.getElementById("btnActivate");
 
-  // ❗ kiểm tra trước khi bật loading
   if(!key){
     showNotify("Thông báo","Nhập key");
     return;
   }
 
-  // ⭐ bật loading sau khi đã có key
   btn.disabled = true;
   btn.innerText = "⏳ Đang kiểm tra...";
 document.getElementById("loadingBlur").style.display = "block";
-
 
   fetch(API_URL,{
     method:"POST",
@@ -372,14 +206,11 @@ document.getElementById("loadingBlur").style.display = "block";
 
   document.getElementById("lock").style.display="none";
 
-  // ⭐ BẮT ĐẦU REALTIME CHECK NGAY SAU KHI ACTIVE
   startRealtimeCheck();
-
 
   document.getElementById("loadingBlur").style.display="none";
   btn.disabled=false;
   btn.innerText="Kích hoạt";
-
 
     startConfetti();
 
@@ -393,7 +224,6 @@ document.getElementById("loadingBlur").style.display = "block";
 
   }else{
 
-    // ⭐ FIX TREO APP
     document.getElementById("loadingBlur").style.display="none";
     btn.disabled=false;
     btn.innerText="Kích hoạt";
@@ -410,18 +240,11 @@ document.getElementById("loadingBlur").style.display = "block";
   });
 }
 
-
-
-
-// ⭐ CHECK NGAY KHI APP ACTIVE LẠI
 document.addEventListener("visibilitychange",()=>{
-
   if(!document.hidden){
     autoCheckKey();
   }
-
 });
-
 
 /* ===== THÔNG BÁO UI ===== */
 function showNotify(title,msg){
@@ -432,7 +255,6 @@ function showNotify(title,msg){
 
   const btn = document.getElementById("notifyBtn");
 
-  // ⭐ nhận diện lỗi key
   const isKeyError =
       title.includes("Thông báo hệ thống") ||
       title.includes("Kích hoạt thất bại") ||
@@ -443,7 +265,6 @@ function showNotify(title,msg){
 
   if(isKeyError){
 
-    // 👉 đổi nút sang liên hệ admin
     btn.innerText = "📞 Liên hệ Admin";
 
     btn.onclick = function(){
@@ -452,7 +273,6 @@ function showNotify(title,msg){
 
   }else{
 
-    // 👉 popup bình thường
     btn.innerText = "Bắt đầu sử dụng";
 
     btn.onclick = function(){
@@ -460,7 +280,6 @@ function showNotify(title,msg){
     };
   }
 
-  // ⭐ rung nhẹ (chỉ khi đang ở màn nhập key)
   const box = document.getElementById("lock");
 if(box && box.style.display!=="none"){
     box.classList.remove("shake");
@@ -468,8 +287,6 @@ if(box && box.style.display!=="none"){
     box.classList.add("shake");
   }
 }
-
-
 
 function closeNotify(){
   document.getElementById("notifyBox").style.display = "none";
@@ -492,9 +309,6 @@ function startConfetti(){
     setTimeout(()=>p.remove(),5000);
   }
 }
-
-
-
 
 /* ===== APP CHÍNH ===== */
 const c=document.getElementById("c");
@@ -535,7 +349,6 @@ function drawRoundedImage(ctx,img,x,y,w,h,r){
  ctx.restore();
 }
 
-/* ===== KHIÊN + CHECK ===== */
 function drawShield(ctx,x,y,size,color){
  ctx.save();
  ctx.translate(x,y);
@@ -562,7 +375,6 @@ function drawShield(ctx,x,y,size,color){
  ctx.restore();
 }
 
-/* ===== INPUT ===== */
 imageInput.onchange=e=>{
  const r=new FileReader();
  r.onload=()=>img.src=r.result;
@@ -589,6 +401,7 @@ function setNow(){
  date.value=`${day} tháng ${month}, ${year}`;
  weekday.value=d.toLocaleDateString("vi-VN",{weekday:'long'});
 }
+
 function getGPS(){
   if(!navigator.geolocation){
     alert("Thiết bị không hỗ trợ GPS");
@@ -600,7 +413,7 @@ function getGPS(){
       const lat = pos.coords.latitude.toFixed(6);
       const lng = pos.coords.longitude.toFixed(6);
 
-      alert("GPS OK: " + lat + ", " + lng); // test, xoá sau
+      alert("GPS OK: " + lat + ", " + lng);
 
       fetch(
         `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
@@ -645,16 +458,12 @@ function getGPS(){
   );
 }
 
-
-
-/* ===== DRAW ===== */
 function draw(){
  if(!img.src) return alert("Chưa chọn ảnh");
  ctx.drawImage(img,0,0);
 
  const pad=fs(0.04);
 
- /* WATERMARK DỌC */
  if(isOn("toggleVertical")){
   ctx.save();
   ctx.translate(c.width-fs(0.008),c.height/2);
@@ -683,7 +492,6 @@ function draw(){
   ctx.restore();
  }
 
- /* BRAND PHẢI DƯỚI */
  if(isOn("toggleBrand")){
   let yBrand=c.height-pad;
   ctx.textAlign="right";
@@ -701,7 +509,6 @@ function draw(){
   ctx.fillText("100% Chân thực",c.width-pad,yBrand+fs(0.03));
  }
 
- /* CỤM TRÁI DƯỚI */
  ctx.textAlign="left";
  let leftX=pad;
  let y=c.height-pad-fs(0.09);
@@ -741,7 +548,6 @@ function draw(){
  }
 }
 
-/* ===== DOWNLOAD ===== */
 function isIOS(){
  return /iPhone|iPad|iPod/i.test(navigator.userAgent);
 }
@@ -756,15 +562,12 @@ function download(){
   a.href=d;a.download="timemark.png";a.click();
  }
 }
-/* ===== MỞ WEB MUA KEY ===== */
 function openBuyPage(){
   window.open("buy.html","_blank");
 }
 
-/* HOA RƠI */
 window.onload=()=>{
 
-  // ⭐ RESET POPUP HẠN KEY MỖI LẦN MỞ APP
   localStorage.removeItem("tm_notify_once");
 
   const box=document.getElementById("petals");
@@ -788,13 +591,7 @@ window.onload=()=>{
   }
 
 };
-
-
 </script>
+
 </body>
 </html>
-
-
-
-
-
