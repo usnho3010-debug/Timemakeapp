@@ -655,6 +655,49 @@ window.onload=()=>{
 
 };
 </script>
+<!-- ===== TIMEMARK FLOATING MENU ===== -->
+<div class="tmFab">
+  <div class="tmFabMenu" id="tmFabMenu">
+    <a href="https://timemark.io.vn" class="tmFabItem">🏠 <span>Trang chủ</span></a>
+    <a href="buy.html" target="_blank" class="tmFabItem">🛒 <span>Mua key</span></a>
+    <a href="https://zalo.me/0837685798" target="_blank" class="tmFabItem">💬 <span>Liên hệ</span></a>
+  </div>
+
+  <button id="tmFabBtn" class="tmFabBtn" onclick="toggleFab()">☰</button>
+
+</div>
+
+<script>
+function toggleFab(){
+  document.getElementById("tmFabMenu").classList.toggle("show");
+}
+const fab = document.getElementById("tmFabBtn");
+const fabWrap = document.querySelector(".tmFab");
+
+let isDragging = false;
+let offsetX = 0;
+let offsetY = 0;
+
+fab.addEventListener("pointerdown",(e)=>{
+  isDragging = true;
+  offsetX = e.clientX - fabWrap.getBoundingClientRect().left;
+  offsetY = e.clientY - fabWrap.getBoundingClientRect().top;
+  fab.setPointerCapture(e.pointerId);
+});
+
+document.addEventListener("pointermove",(e)=>{
+  if(!isDragging) return;
+
+  fabWrap.style.right = "auto";
+  fabWrap.style.bottom = "auto";
+  fabWrap.style.left = (e.clientX - offsetX) + "px";
+  fabWrap.style.top  = (e.clientY - offsetY) + "px";
+});
+
+document.addEventListener("pointerup",()=>{
+  isDragging=false;
+});
+</script>
 
 </body>
 </html>
