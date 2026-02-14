@@ -1,0 +1,204 @@
+/* ===================================================
+TIMEMARK APP THEME.CSS  (PRO SAFE VERSION)
+Chỉ chỉnh GIAO DIỆN – KHÔNG ảnh hưởng LOGIC
+=================================================== */
+
+/* ===== BACKGROUND SYSTEM ===== */
+body{
+margin:0;
+font-family:Arial, sans-serif;
+background:linear-gradient(135deg,#0b1d3a,#4a00e0,#8e2de2);
+min-height:100vh;
+color:#fff;
+}
+
+/* ===== LỚP NỀN BLUR ===== */
+.bg{
+position:fixed;
+inset:0;
+backdrop-filter:blur(6px);
+z-index:0;
+}
+
+/* ===== KHUNG APP ===== */
+.app{
+position:relative;
+z-index:2;
+max-width:520px;
+margin:auto;
+padding:10px;
+}
+
+/* ===== HEADER ===== */
+.header{
+text-align:center;
+color:#fff;
+}
+
+/* ===== CARD TOOL ===== */
+.controls{
+background:rgba(255,255,255,.08);
+backdrop-filter:blur(16px);
+border-radius:18px;
+padding:12px;
+color:#fff;
+box-shadow:0 20px 40px rgba(0,0,0,.4);
+transition:.25s;
+}
+
+/* ===== INPUT + BUTTON ===== */
+input,button,label{
+width:100%;
+margin:4px 0;
+padding:8px;
+border-radius:10px;
+font-size:14px;
+}
+
+button{
+cursor:pointer;
+background:linear-gradient(135deg,#ff6a00,#ff9800);
+color:#fff;
+font-weight:bold;
+border:none;
+transition:.25s;
+}
+
+button:hover{
+transform:translateY(-2px);
+box-shadow:0 10px 25px rgba(255,120,0,.5);
+}
+
+/* ===== CANVAS ===== */
+canvas{
+max-width:100%;
+margin-top:10px;
+border-radius:16px;
+background:#000;
+}
+
+/* ===== HOA RƠI ===== */
+.petals{
+position:fixed;
+inset:0;
+pointer-events:none;
+z-index:1;
+}
+
+@keyframes fall{
+to{transform:translateY(120vh)}
+}
+
+@keyframes sway{
+0%{margin-left:0}
+50%{margin-left:30px}
+100%{margin-left:0}
+}
+
+/* ===== LOCK OVERLAY ===== */
+.lock{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.85);
+z-index:9999;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+/* ===== POPUP BOX ===== */
+.lockBox{
+background:rgba(255,255,255,0.96);
+backdrop-filter:blur(18px);
+padding:26px 22px;
+border-radius:20px;
+width:90%;
+max-width:360px;
+text-align:center;
+box-shadow:0 25px 60px rgba(0,0,0,.35);
+animation:popIn .35s ease;
+color:#222; /* ⭐ FIX CHỮ KHÔNG BỊ CHÌM */
+}
+
+.lockBox h3{
+margin-top:0;
+color:#222;
+}
+
+.lockBox p{
+color:#444;
+}
+
+/* INPUT TRONG POPUP */
+.lockBox input{
+background:#fff;
+border:2px solid #ffe082;
+border-radius:14px;
+padding:12px;
+font-size:15px;
+transition:.25s;
+color:#222;
+}
+
+.lockBox input:focus{
+border-color:#ff9800;
+box-shadow:0 0 0 3px rgba(255,193,7,.25);
+}
+
+/* BUTTON POPUP */
+.lockBox button{
+background:linear-gradient(135deg,#ff6a00,#ff9800);
+color:#fff;
+font-weight:bold;
+border-radius:14px;
+padding:12px;
+margin-top:8px;
+box-shadow:0 10px 20px rgba(0,0,0,.25);
+}
+
+.lockBox button:active{
+transform:scale(.96);
+}
+
+/* ===== LOADING BLUR ===== */
+.loadingBlur{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.4);
+backdrop-filter:blur(6px);
+z-index:9998;
+display:none;
+}
+
+/* ===== SHAKE ANIMATION ===== */
+.shake{
+animation:shake .35s;
+}
+
+@keyframes shake{
+0%{transform:translateX(0)}
+25%{transform:translateX(-6px)}
+50%{transform:translateX(6px)}
+75%{transform:translateX(-4px)}
+100%{transform:translateX(0)}
+}
+
+/* ===== POPUP NOTIFY MAX ===== */
+.notifyMax{
+background:linear-gradient(180deg,#ffffff,#fff8e1);
+border-radius:24px;
+text-align:center;
+color:#222;
+}
+
+/* ICON KHIÊN */
+.shieldIcon{
+font-size:44px;
+margin-bottom:6px;
+animation:popShield .5s ease;
+}
+
+@keyframes popShield{
+from{transform:scale(.5);opacity:0}
+to{transform:scale(1);opacity:1}
+}
