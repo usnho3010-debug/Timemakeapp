@@ -283,5 +283,11 @@ bottom:90px;
 z-index:9999;
 touch-action:none; /* ⭐ cho phép kéo trên iOS */
 }
+/* ⭐ ÉP DROPDOWN WATERMARK XUỐNG DÒNG */
+#wmStyle{
+  display:block;
+  width:100%;
+  margin-bottom:6px;
+}
 
 
