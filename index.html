@@ -67,6 +67,12 @@ style="margin-top:6px;background:#ff6a00;color:#fff;font-weight:bold;">
 <input type="file" id="imageInput" accept="image/*">
 
 <label>Logo</label> <input type="file" id="logoInput" accept="image/*">
+<label>Kiểu Watermark</label>
+<select id="wmStyle">
+  <option value="v2">🚀 Timemark V2 (Mới)</option>
+  <option value="v1">⭐ Timemark V1 (Cổ điển)</option>
+</select>
+
 
 <label>Giờ</label> <input id="time"> <label>Ngày</label> <input id="date"> <label>Thứ</label> <input id="weekday"> <label>Địa chỉ</label> <input id="address">
 
@@ -77,6 +83,7 @@ style="margin-top:6px;background:#ff6a00;color:#fff;font-weight:bold;">
 <canvas id="c"></canvas>
 
 </div>
+
 
 <script>
 /* ===================================================
@@ -105,6 +112,13 @@ showNotify(
 
 /* ===== CONFIG ===== */
 const API_URL = "https://script.google.com/macros/s/AKfycbwDRIc7_SZC2nx1TlYRU-taklWN57lDF9aXLHt2LE3MrLDEu-7Q0inQQlvYd6MKplhw9Q/exec";
+/* ===== LẤY KIỂU WATERMARK ===== */
+function getWMStyle(){
+  const el = document.getElementById("wmStyle");
+  if(!el) return "v2";   // mặc định nếu chưa có dropdown
+  return el.value;
+}
+
 
 let keyWatcher = null;
 
@@ -437,6 +451,21 @@ function drawShield(ctx,x,y,size,color){
 
  ctx.restore();
 }
+function roundRect(ctx,x,y,w,h,r){
+ ctx.beginPath();
+ ctx.moveTo(x+r,y);
+ ctx.lineTo(x+w-r,y);
+ ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+ ctx.lineTo(x+w,y+h-r);
+ ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+ ctx.lineTo(x+r,y+h);
+ ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+ ctx.lineTo(x,y+r);
+ ctx.quadraticCurveTo(x,y,x+r,y);
+ ctx.closePath();
+ ctx.fill();
+}
+
 
 imageInput.onchange=e=>{
  const r=new FileReader();
@@ -522,8 +551,24 @@ function getGPS(){
 }
 
 function draw(){
+
  if(!img.src) return alert("Chưa chọn ảnh");
+
+ const style = getWMStyle();
+
  ctx.drawImage(img,0,0);
+
+ /* =========================
+    ⭐ STYLE V1 → CHẠY RIÊNG
+ ========================== */
+ if(style === "v1"){
+   drawStyleV1();
+   return; // ⛔ NGẮT KHÔNG CHO V2 CHẠY
+ }
+
+ /* =========================
+    ⭐ STYLE V2 (GIỮ NGUYÊN)
+ ========================== */
 
  const pad=fs(0.04);
 
@@ -543,13 +588,7 @@ function draw(){
 
   const w=ctx.measureText(text).width;
 
-  drawShield(
-    ctx,
-    -w/2 - fs(0.02),
-    0,
-    fs(0.022),
-    "#FFFFFF"
-  );
+  drawShield(ctx,-w/2 - fs(0.02),0,fs(0.022),"#FFFFFF");
 
   ctx.fillText(text,-w/2,0);
   ctx.restore();
@@ -609,6 +648,113 @@ function draw(){
   ctx.fillStyle="rgba(255,255,255,0.9)";
   ctx.fillText(address.value,leftX,y);
  }
+
+}
+
+
+/* ===== WATERMARK STYLE V1 (CLASSIC) ===== */
+function drawStyleV1(){
+
+ const pad=fs(0.03);
+
+ const hBox=fs(0.062);
+ const hDate=fs(0.036);
+ const hAddr=fs(0.030);
+ const hCommit=fs(0.034);
+ const gap=fs(0.03);
+
+ const totalH=hBox+gap+hDate+hAddr*2+gap+hCommit;
+ let y=c.height-totalH-fs(0.04);
+ if(y<pad) y=pad;
+
+ /* ===== ĐIỂM DANH – GIỜ ===== */
+ ctx.font=`bold ${fs(0.026)}px Arial`;
+ const titleText = "ĐIỂM DANH";
+const titleW = ctx.measureText(titleText).width + pad*1.6;
+
+ ctx.font=`bold ${fs(0.036)}px Arial`;
+ const timeW=ctx.measureText(time.value).width+pad*1.6;
+
+ const r=fs(0.008);
+ const totalW=titleW+timeW;
+
+ ctx.fillStyle="#FFFFFF";
+ roundRect(ctx,pad,y,totalW,hBox,r);
+
+ ctx.fillStyle="#F6B800";
+ ctx.beginPath();
+ ctx.moveTo(pad+r,y);
+ ctx.lineTo(pad+titleW,y);
+ ctx.lineTo(pad+titleW,y+hBox);
+ ctx.lineTo(pad+r,y+hBox);
+ ctx.quadraticCurveTo(pad,y+hBox,pad,y+hBox-r);
+ ctx.lineTo(pad,y+r);
+ ctx.quadraticCurveTo(pad,y,pad+r,y);
+ ctx.closePath();
+ ctx.fill();
+
+ ctx.textAlign="center";
+ ctx.fillStyle="#000";
+ ctx.font=`bold ${fs(0.026)}px Arial`;
+ ctx.fillText(titleText,pad+titleW/2,y+hBox*0.64);
+
+
+ ctx.fillStyle="#1F4FD8";
+ ctx.font=`bold ${fs(0.036)}px Arial`;
+ ctx.fillText(time.value,pad+titleW+timeW/2,y+hBox*0.64);
+ ctx.textAlign="left";
+
+ y+=hBox+gap;
+
+ /* ===== NGÀY + ĐỊA CHỈ ===== */
+ const textX=pad+fs(0.03);
+ const startY=y;
+
+ ctx.fillStyle="#FFFFFF";
+ ctx.font=`bold ${fs(0.032)}px Arial`;
+ ctx.fillText(date.value,textX,y);
+ y+=hDate;
+
+ ctx.font=`${fs(0.025)}px Arial`;
+ if(address.value){
+  ctx.fillText(address.value,textX,y);
+  y+=hAddr;
+}
+
+
+ ctx.fillStyle="#F6B800";
+ ctx.fillRect(pad,startY-fs(0.024),fs(0.008),y-startY);
+
+ y+=gap;
+
+ /* ===== CAM KẾT ===== */
+ ctx.fillStyle="rgba(255,255,255,0.45)";
+ ctx.font=`${fs(0.023)}px Arial`;
+ ctx.fillText("Cam kết ngày giờ chân thực",textX,y);
+
+ /* ===== BRAND ===== */
+ ctx.textAlign="right";
+ ctx.font=`bold ${fs(0.035)}px Arial`;
+ const markW=ctx.measureText("mark").width;
+ ctx.fillStyle="#F6B800";
+ ctx.fillText("Time",c.width-pad-markW,c.height-pad-fs(0.03));
+ ctx.fillStyle="rgba(255,255,255,0.9)";
+ ctx.fillText("mark",c.width-pad,c.height-pad-fs(0.03));
+ ctx.fillStyle="rgba(255,255,255,0.45)";
+ ctx.font=`${fs(0.024)}px Arial`;
+ ctx.fillText("100% Chân thực",c.width-pad,c.height-pad);
+ ctx.textAlign="left";
+
+ /* ===== WATERMARK DỌC ===== */
+ ctx.save();
+ ctx.translate(c.width-fs(0.004),c.height/2);
+ ctx.rotate(-Math.PI/2);
+ ctx.fillStyle="rgba(255,255,255,0.70)";
+ ctx.font=`${fs(0.016)}px Arial`;
+ ctx.textAlign="center";
+ ctx.fillText("ⓒ "+generateCode()+" · Timemark Verified",0,0);
+ ctx.restore();
+
 }
 
 function isIOS(){
@@ -715,7 +861,6 @@ function download(){
 }
 
 
-
 window.onload=()=>{
 
   localStorage.removeItem("tm_notify_once");
@@ -788,5 +933,3 @@ document.addEventListener("pointerup",()=>{
 
 </body>
 </html>
-
-
