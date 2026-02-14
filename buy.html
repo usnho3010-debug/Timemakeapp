@@ -13,99 +13,44 @@ body{
   min-height:100vh;
   color:#fff;
 }
-
-.header{
-  text-align:center;
-  padding:30px 10px;
-}
-
+.header{text-align:center;padding:30px 10px;}
 .container{
-  max-width:900px;
-  margin:auto;
-  display:flex;
-  gap:20px;
-  flex-wrap:wrap;
+  max-width:900px;margin:auto;
+  display:flex;gap:20px;flex-wrap:wrap;
   justify-content:center;
 }
-
 .card{
-  width:260px;
-  border-radius:18px;
-  padding:22px;
+  width:260px;border-radius:18px;padding:22px;
   backdrop-filter:blur(16px);
   background:rgba(255,255,255,0.08);
   box-shadow:0 20px 40px rgba(0,0,0,.4);
   text-align:center;
   transition:.3s;
 }
-.card:hover{
-  transform:translateY(-8px);
-}
-
+.card:hover{transform:translateY(-8px);}
 .basic{border:2px solid #00e676;}
 .pro{border:2px solid #00b0ff;}
 .premium{border:2px solid #ff00ff;}
-
-h3{margin-top:0}
-
-.price{
-  font-size:18px;
-  margin:10px 0;
-  line-height:1.8;
-}
-
+.price{font-size:18px;margin:10px 0;line-height:1.8;}
 button{
-  width:100%;
-  padding:12px;
-  border:none;
-  border-radius:10px;
-  font-weight:bold;
+  width:100%;padding:12px;border:none;
+  border-radius:10px;font-weight:bold;
   cursor:pointer;
   background:linear-gradient(135deg,#ff6a00,#ff9800);
   color:#fff;
 }
-button:hover{opacity:.9}
-
-.footer{
-  text-align:center;
-  margin-top:30px;
-  opacity:.7;
-}
+.footer{text-align:center;margin-top:30px;opacity:.7;}
 </style>
 </head>
 
-
 <body>
-<div id="qrPopup" style="
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.75);
-display:none;
-align-items:center;
-justify-content:center;
-z-index:99999;
-">
 
-  <div style="
-    background:#111;
-    padding:20px;
-    border-radius:14px;
-    text-align:center;
-    width:300px;
-  ">
-
+<div id="qrPopup" style="position:fixed;inset:0;background:rgba(0,0,0,.75);
+display:none;align-items:center;justify-content:center;z-index:99999;">
+  <div style="background:#111;padding:20px;border-radius:14px;text-align:center;width:300px;">
     <h3>Quét QR để thanh toán</h3>
-
-    <img id="qrImg" src="" style="
-      width:220px;
-      border-radius:10px;
-      margin:12px 0;
-    ">
-
-    <div id="loadingText" style="opacity:.8">
-      ⏳ Đang chờ thanh toán...
-    </div>
-
+    <img id="qrImg" src="" style="width:220px;border-radius:10px;margin:12px 0;">
+    <div id="loadingText">⏳ Đang chờ thanh toán...</div>
   </div>
 </div>
 
@@ -114,193 +59,114 @@ z-index:99999;
   <p>Chọn gói bản quyền phù hợp</p>
 </div>
 
-<div class="container">
+<div class="container" id="pricing"></div>
 
-  <div class="card basic">
-    <h3>⚡ 1 NGÀY</h3>
-    <div class="price">39.000đ</div>
-    <button onclick="buy('basic1')">MUA NGAY</button>
-  </div>
-
-  <div class="card basic">
-    <h3>🌱 7 NGÀY</h3>
-    <div class="price">199.000đ</div>
-    <button onclick="buy('basic7')">MUA NGAY</button>
-  </div>
-
-  <div class="card pro">
-    <h3>⭐ 1 THÁNG</h3>
-    <div class="price">699.000đ</div>
-    <button onclick="buy('pro1')">MUA NGAY</button>
-  </div>
-
-  <div class="card pro">
-    <h3>🔥 3 THÁNG</h3>
-    <div class="price">1.399.000đ</div>
-    <button onclick="buy('pro3')">MUA NGAY</button>
-  </div>
-
-  <div class="card premium">
-    <h3>🚀 6 THÁNG</h3>
-    <div class="price">2.199.000đ</div>
-    <button onclick="buy('pre6')">MUA NGAY</button>
-  </div>
-
-  <div class="card premium">
-    <h3>💎 VĨNH VIỄN</h3>
-    <div class="price">2.999.000đ</div>
-    <button onclick="buy('lifetime')">MUA NGAY</button>
-  </div>
-
-</div>
-
-
-<div class="footer">
-Mỗi key dùng cho 1 thiết bị
-</div>
+<div class="footer">Mỗi key dùng cho 1 thiết bị</div>
 
 <script>
-let checkTimer = null;
-function startChecking(email){
 
-  if(checkTimer) clearInterval(checkTimer);
-
-  checkTimer = setInterval(()=>{
-
-    fetch("https://script.google.com/macros/s/AKfycbwDRIc7_SZC2nx1TlYRU-taklWN57lDF9aXLHt2LE3MrLDEu-7Q0inQQlvYd6MKplhw9Q/exec",{
-      method:"POST",
-      body:JSON.stringify({
-        action:"checkPaid",
-        email:email
-      })
-    })
-    .then(r=>r.json())
-    .then(res=>{
-
-      if(res.paid){
-
-        clearInterval(checkTimer);
-
-        document.getElementById("qrPopup").style.display="none";
-
-        alert("🎉 Thanh toán thành công! KEY đã gửi về email.");
-
-      }
-
-    });
-
-  },3000);
-}
-
-// ====== PRICE MAP THEO LOGIC APP HIỆN TẠI ======
+/* =========================
+   ⭐ CHỈ SỬA GIÁ Ở ĐÂY
+========================= */
 const priceMap = {
   basic1: 39000,
   basic7: 199000,
   pro1: 699000,
   pro3: 1399000,
   pre6: 2199000,
-  lifetime: 2999000
+  lifetime: 3499000
 };
 
+/* =========================
+   ⭐ DATA PLAN (KHÔNG CẦN SỬA GIÁ)
+========================= */
+const plans = [
+ {id:"basic1", title:"⚡ 1 NGÀY", cls:"basic"},
+ {id:"basic7", title:"🌱 7 NGÀY", cls:"basic"},
+ {id:"pro1", title:"⭐ 1 THÁNG", cls:"pro"},
+ {id:"pro3", title:"🔥 3 THÁNG", cls:"pro"},
+ {id:"pre6", title:"🚀 6 THÁNG", cls:"premium"},
+ {id:"lifetime", title:"💎 VĨNH VIỄN", cls:"premium"}
+];
 
 /* =========================
-   ⭐ CHECK LOCK BUY PAGE
+   ⭐ AUTO RENDER CARD + GIÁ
 ========================= */
+const box = document.getElementById("pricing");
 
-fetch("https://script.google.com/macros/s/AKfycbwDRIc7_SZC2nx1TlYRU-taklWN57lDF9aXLHt2LE3MrLDEu-7Q0inQQlvYd6MKplhw9Q/exec",{
-  method:"POST",
-  body:JSON.stringify({
-    action:"checkLock"
-  })
-})
-.then(r=>r.json())
-.then(res=>{
+plans.forEach(p=>{
 
-  console.log("LOCK STATUS:",res);
+  const priceText = priceMap[p.id].toLocaleString("vi-VN")+"đ";
 
-  if(res.lock){
-
-    document.querySelectorAll("button").forEach(btn=>{
-      btn.disabled = true;
-      btn.innerText = "🔒 Đang cập nhật thanh toán";
-      btn.style.opacity = "0.5";
-      btn.style.cursor = "not-allowed";
-    });
-
-    document.getElementById("toastLock").style.display="block";
-  }
-
+  box.innerHTML += `
+    <div class="card ${p.cls}">
+      <h3>${p.title}</h3>
+      <div class="price">${priceText}</div>
+      <button onclick="buy('${p.id}')">MUA NGAY</button>
+    </div>
+  `;
 });
 
 
+/* =========================
+   ⭐ CHECK PAID REALTIME
+========================= */
+let checkTimer=null;
+
+function startChecking(email){
+
+  if(checkTimer) clearInterval(checkTimer);
+
+  checkTimer=setInterval(()=>{
+
+    fetch("https://script.google.com/macros/s/AKfycbwDRIc7_SZC2nx1TlYRU-taklWN57lDF9aXLHt2LE3MrLDEu-7Q0inQQlvYd6MKplhw9Q/exec",{
+      method:"POST",
+      body:JSON.stringify({action:"checkPaid",email})
+    })
+    .then(r=>r.json())
+    .then(res=>{
+      if(res.paid){
+        clearInterval(checkTimer);
+        document.getElementById("qrPopup").style.display="none";
+        alert("🎉 Thanh toán thành công! KEY đã gửi về email.");
+      }
+    });
+
+  },3000);
+}
 
 
+/* =========================
+   ⭐ BUY
+========================= */
 function buy(plan){
 
   const email = prompt("Nhập Gmail để nhận KEY:");
 
-  if(!email){
-    alert("Bạn chưa nhập Gmail");
-    return;
-  }
-
-  if(!email.includes("@")){
+  if(!email || !email.includes("@")){
     alert("Email không hợp lệ");
     return;
   }
 
   const price = priceMap[plan];
+  const orderId = plan.toUpperCase();
 
-// ⭐ Nội dung chuyển khoản mới (khớp webhook)
-const orderId = plan.toUpperCase();
+  const qrLink =
+  "https://img.vietqr.io/image/970415-104882732682-compact2.png?amount="
+  +price+
+  "&addInfo="+encodeURIComponent(orderId)+
+  "&accountName="+encodeURIComponent("TIMEMARK");
 
-const qrLink =
-"https://img.vietqr.io/image/970415-104882732682-compact2.png?amount="
-+price+
-"&addInfo="+encodeURIComponent(orderId)+
-"&accountName="+encodeURIComponent("TIMEMARK");
-
-  // ⭐ HIỆN POPUP QR
   document.getElementById("qrPopup").style.display="flex";
-  document.getElementById("qrImg").src = qrLink;
-document.getElementById("loadingText").innerText = "⏳ Đang chờ thanh toán...";
+  document.getElementById("qrImg").src=qrLink;
 
-
-  // ⭐ TẠO DÒNG CHỜ
   fetch("https://script.google.com/macros/s/AKfycbwDRIc7_SZC2nx1TlYRU-taklWN57lDF9aXLHt2LE3MrLDEu-7Q0inQQlvYd6MKplhw9Q/exec",{
-  method:"POST",
-  body:JSON.stringify({
-    action:"createPending",
-    email:email
-  })
-})
-.then(()=>{
-
-  // ⭐ CHỈ CHECK SAU KHI TẠO DÒNG CHỜ XONG
-  startChecking(email);
-
-});
-
+    method:"POST",
+    body:JSON.stringify({action:"createPending",email})
+  }).then(()=>startChecking(email));
 }
 
 </script>
-<div id="toastLock" style="
-position:fixed;
-top:20px;
-left:50%;
-transform:translateX(-50%);
-background:rgba(0,0,0,0.85);
-color:#fff;
-padding:12px 18px;
-border-radius:10px;
-font-size:14px;
-display:none;
-z-index:9999;
-backdrop-filter:blur(8px);
-">
-🔒 Trang mua key đang tạm khóa
-</div>
-
 
 </body>
 </html>
