@@ -1,18 +1,55 @@
 /* ===================================================
-TIMEMARK APP THEME.CSS  (PRO SAFE VERSION)
-Chỉ chỉnh GIAO DIỆN – KHÔNG ảnh hưởng LOGIC
+🤖 TIMEMARK APP THEME — ULTRA MAN TECH SYNC
+SAFE VERSION (không ảnh hưởng logic)
+Áp dụng:
+- app index.html
+- buy.html
 =================================================== */
 
-/* ===== BACKGROUND SYSTEM ===== */
+/* ================= CORE COLOR ================= */
+
+:root{
+--bg1:#02050f;
+--bg2:#050a22;
+--bg3:#0a1030;
+
+--neon:#00eaff;
+--ultra:#ff1744;
+
+--panel:rgba(10,16,40,.65);
+--panelBorder:rgba(0,234,255,.35);
+
+--text:#ffffff;
+}
+
+/* ================= BASE ================= */
+
 body{
 margin:0;
 font-family:Arial, sans-serif;
-background:linear-gradient(135deg,#0b1d3a,#4a00e0,#8e2de2);
+color:var(--text);
 min-height:100vh;
-color:#fff;
+
+background:
+radial-gradient(circle at 20% -10%,rgba(0,234,255,.18),transparent 40%),
+radial-gradient(circle at 80% 0%,rgba(255,23,68,.12),transparent 40%),
+linear-gradient(135deg,var(--bg1),var(--bg2),var(--bg3));
 }
 
-/* ===== LỚP NỀN BLUR ===== */
+/* HUD GRID NHẸ (an toàn hiệu năng) */
+body::before{
+content:"";
+position:fixed;
+inset:0;
+background:
+linear-gradient(rgba(0,234,255,.05) 1px,transparent 1px),
+linear-gradient(90deg,rgba(0,234,255,.05) 1px,transparent 1px);
+background-size:60px 60px;
+pointer-events:none;
+z-index:0;
+}
+
+/* ===== BLUR BACKGROUND ===== */
 .bg{
 position:fixed;
 inset:0;
@@ -20,7 +57,8 @@ backdrop-filter:blur(6px);
 z-index:0;
 }
 
-/* ===== KHUNG APP ===== */
+/* ================= APP FRAME ================= */
+
 .app{
 position:relative;
 z-index:2;
@@ -29,55 +67,103 @@ margin:auto;
 padding:10px;
 }
 
-/* ===== HEADER ===== */
+/* ================= HEADER ================= */
+
 .header{
 text-align:center;
 color:#fff;
+text-shadow:0 0 10px rgba(0,234,255,.6);
 }
 
-/* ===== CARD TOOL ===== */
-.controls{
-background:rgba(255,255,255,.08);
+/* ================= PANEL / CARD ================= */
+
+.controls,
+.card,
+.qrBox{
+
+background:var(--panel);
 backdrop-filter:blur(16px);
-border-radius:18px;
-padding:12px;
+border-radius:10px;
+padding:14px;
 color:#fff;
-box-shadow:0 20px 40px rgba(0,0,0,.4);
+
+border:1px solid var(--panelBorder);
+
+box-shadow:
+0 0 20px rgba(0,234,255,.15),
+0 20px 40px rgba(0,0,0,.45);
+
 transition:.25s;
 }
 
-/* ===== INPUT + BUTTON ===== */
-input,button,label{
+/* Hover chỉ nâng nhẹ — không animation nặng */
+.card:hover{
+transform:translateY(-6px);
+border-color:var(--neon);
+}
+
+/* ================= INPUT ================= */
+
+input,select,label{
 width:100%;
 margin:4px 0;
 padding:8px;
-border-radius:10px;
+border-radius:6px;
 font-size:14px;
+background:#020617;
+border:1px solid rgba(0,234,255,.25);
+color:#fff;
+outline:none;
 }
 
+input:focus,
+select:focus{
+border-color:var(--neon);
+box-shadow:0 0 10px rgba(0,234,255,.35);
+}
+
+/* ================= BUTTON ULTRA TECH ================= */
+/* ⭐ SAFE: không dùng pseudo layer phủ */
+
 button{
+
+width:100%;
+margin:4px 0;
+padding:10px;
+border-radius:6px;
+font-size:14px;
 cursor:pointer;
-background:linear-gradient(135deg,#ff6a00,#ff9800);
+
+background:#001824;
 color:#fff;
 font-weight:bold;
-border:none;
-transition:.25s;
+
+border:1px solid var(--neon);
+
+box-shadow:0 0 12px rgba(0,234,255,.3);
+
+transition:.2s;
 }
 
 button:hover{
 transform:translateY(-2px);
-box-shadow:0 10px 25px rgba(255,120,0,.5);
+box-shadow:
+0 0 18px var(--neon),
+0 0 35px rgba(255,23,68,.25);
 }
 
-/* ===== CANVAS ===== */
+/* ================= CANVAS ================= */
+
 canvas{
 max-width:100%;
 margin-top:10px;
-border-radius:16px;
+border-radius:12px;
 background:#000;
+border:1px solid rgba(0,234,255,.2);
 }
 
-/* ===== HOA RƠI ===== */
+/* ================= PETALS ================= */
+
 .petals{
 position:fixed;
 inset:0;
@@ -95,7 +181,8 @@ to{transform:translateY(120vh)}
 100%{margin-left:0}
 }
 
-/* ===== LOCK OVERLAY ===== */
+/* ================= LOCK OVERLAY ================= */
+
 .lock{
 position:fixed;
 inset:0;
@@ -106,61 +193,53 @@ align-items:center;
 justify-content:center;
 }
 
-/* ===== POPUP BOX ===== */
+/* ================= POPUP BOX ================= */
+
 .lockBox{
-background:rgba(255,255,255,0.96);
+
+background:rgba(6,12,28,.95);
 backdrop-filter:blur(18px);
 padding:26px 22px;
-border-radius:20px;
+border-radius:12px;
 width:90%;
 max-width:360px;
 text-align:center;
-box-shadow:0 25px 60px rgba(0,0,0,.35);
-animation:popIn .35s ease;
-color:#222; /* ⭐ FIX CHỮ KHÔNG BỊ CHÌM */
+
+border:1px solid var(--panelBorder);
+
+box-shadow:0 0 25px rgba(0,234,255,.25);
+
+color:#fff;
 }
 
 .lockBox h3{
 margin-top:0;
-color:#222;
+color:#fff;
 }
 
 .lockBox p{
-color:#444;
+color:#cfd8ff;
 }
 
-/* INPUT TRONG POPUP */
+/* INPUT POPUP */
 .lockBox input{
-background:#fff;
-border:2px solid #ffe082;
-border-radius:14px;
+background:#020617;
+border:1px solid var(--neon);
+border-radius:8px;
 padding:12px;
 font-size:15px;
-transition:.25s;
-color:#222;
-}
-
-.lockBox input:focus{
-border-color:#ff9800;
-box-shadow:0 0 0 3px rgba(255,193,7,.25);
+color:#fff;
 }
 
 /* BUTTON POPUP */
 .lockBox button{
-background:linear-gradient(135deg,#ff6a00,#ff9800);
-color:#fff;
-font-weight:bold;
-border-radius:14px;
-padding:12px;
-margin-top:8px;
-box-shadow:0 10px 20px rgba(0,0,0,.25);
+background:#001824;
+border:1px solid var(--neon);
+border-radius:8px;
 }
 
-.lockBox button:active{
-transform:scale(.96);
-}
+/* ================= LOADING BLUR ================= */
 
-/* ===== LOADING BLUR ===== */
 .loadingBlur{
 position:fixed;
 inset:0;
@@ -170,69 +249,35 @@ z-index:9998;
 display:none;
 }
 
-/* ===== SHAKE ANIMATION ===== */
-.shake{
-animation:shake .35s;
-}
-
-@keyframes shake{
-0%{transform:translateX(0)}
-25%{transform:translateX(-6px)}
-50%{transform:translateX(6px)}
-75%{transform:translateX(-4px)}
-100%{transform:translateX(0)}
-}
-
-/* ===== POPUP NOTIFY MAX ===== */
-.notifyMax{
-background:linear-gradient(180deg,#ffffff,#fff8e1);
-border-radius:24px;
-text-align:center;
-color:#222;
-}
-
-/* ICON KHIÊN */
-.shieldIcon{
-font-size:44px;
-margin-bottom:6px;
-animation:popShield .5s ease;
-}
-
-@keyframes popShield{
-from{transform:scale(.5);opacity:0}
-to{transform:scale(1);opacity:1}
-}
-/* ===================================================
-   ⭐ TIMEMARK FLOATING MENU PRO
-=================================================== */
+/* ================= FLOAT MENU ================= */
 
 .tmFab{
 position:fixed;
 right:18px;
 bottom:90px;
 z-index:9999;
+touch-action:none;
 }
 
-/* NÚT CHÍNH */
 .tmFabBtn{
+
 width:56px;
 height:56px;
 border-radius:50%;
-border:none;
+border:1px solid var(--neon);
+
+background:#001824;
+color:#fff;
 font-size:22px;
 cursor:pointer;
-background:linear-gradient(135deg,#ff6a00,#ff9800);
-color:#fff;
-box-shadow:0 14px 35px rgba(255,120,0,.6);
-transition:.25s;
+
+box-shadow:0 0 20px rgba(0,234,255,.45);
 }
 
 .tmFabBtn:hover{
-transform:scale(1.08);
-box-shadow:0 20px 45px rgba(255,120,0,.9);
+transform:scale(1.05);
 }
 
-/* MENU CON */
 .tmFabMenu{
 position:absolute;
 bottom:70px;
@@ -252,42 +297,52 @@ pointer-events:auto;
 transform:translateY(0);
 }
 
-/* ITEM */
 .tmFabItem{
 display:flex;
 align-items:center;
 gap:10px;
 padding:12px 14px;
-border-radius:14px;
-background:rgba(255,255,255,.12);
-backdrop-filter:blur(16px);
+border-radius:10px;
+
+background:rgba(0,234,255,.08);
+border:1px solid rgba(0,234,255,.35);
+
 color:#fff;
 text-decoration:none;
 font-weight:bold;
-box-shadow:0 10px 25px rgba(0,0,0,.35);
-transition:.25s;
-}
 
-.tmFabItem span{
-white-space:nowrap;
+box-shadow:0 0 18px rgba(0,234,255,.2);
 }
 
 .tmFabItem:hover{
-background:rgba(255,255,255,.22);
 transform:translateX(-4px);
+border-color:var(--neon);
 }
-.tmFab{
+
+/* ================= BUY PAGE EXTRA ================= */
+
+.container{
+max-width:900px;
+margin:auto;
+display:flex;
+gap:20px;
+flex-wrap:wrap;
+justify-content:center;
+}
+
+.header h1{
+text-shadow:
+0 0 12px var(--neon),
+0 0 25px rgba(255,23,68,.4);
+}
+
+/* QR POPUP */
+#qrPopup{
 position:fixed;
-right:18px;
-bottom:90px;
-z-index:9999;
-touch-action:none; /* ⭐ cho phép kéo trên iOS */
+inset:0;
+background:rgba(0,0,0,.75);
+display:none;
+align-items:center;
+justify-content:center;
+z-index:99999;
 }
-/* ⭐ ÉP DROPDOWN WATERMARK XUỐNG DÒNG */
-#wmStyle{
-  display:block;
-  width:100%;
-  margin-bottom:6px;
-}
-
-
