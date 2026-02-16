@@ -346,3 +346,131 @@ align-items:center;
 justify-content:center;
 z-index:99999;
 }
+/* 👑 GOD MODE OVERLAY */
+.god-mode{
+ position:fixed;
+ inset:0;
+ background:radial-gradient(circle,#0a0000,#000);
+ backdrop-filter:blur(12px);
+ display:none;
+ align-items:center;
+ justify-content:center;
+ z-index:9999999;
+ animation:godAppear .35s ease;
+}
+
+/* BOX */
+.god-box{
+ position:relative;
+ width:260px;
+ padding:26px;
+ border-radius:14px;
+ background:#040404;
+ text-align:center;
+ overflow:hidden;
+ box-shadow:
+ 0 0 25px rgba(255,0,0,.8),
+ inset 0 0 18px rgba(255,0,0,.25);
+}
+
+/* HOLOGRAM LIGHT */
+.god-holo{
+ position:absolute;
+ inset:0;
+ background:linear-gradient(transparent,rgba(255,0,0,.2),transparent);
+ animation:holoMove 2.5s linear infinite;
+ pointer-events:none;
+}
+
+/* ENERGY RINGS */
+.god-ring,
+.god-ring2{
+ position:absolute;
+ left:50%;
+ top:26px;
+ transform:translateX(-50%);
+ width:44px;
+ height:44px;
+ border-radius:50%;
+ border:2px solid rgba(255,0,0,.6);
+ animation:spin 1s linear infinite;
+}
+
+.god-ring2{
+ width:60px;
+ height:60px;
+ opacity:.4;
+ animation:spinReverse 1.5s linear infinite;
+}
+
+/* TEXT */
+.god-title{
+ margin-top:70px;
+ font-size:12px;
+ letter-spacing:2px;
+ color:#ff2a2a;
+}
+
+.god-text{
+ margin-top:6px;
+ font-size:13px;
+ color:#fff;
+}
+
+/* BAR */
+.god-bar{
+ margin-top:14px;
+ height:3px;
+ background:#111;
+ overflow:hidden;
+}
+
+.god-bar span{
+ display:block;
+ height:100%;
+ width:20%;
+ background:linear-gradient(90deg,#ff0000,#ff4444,#ff0000);
+ animation:godLoad 1.1s linear infinite;
+}
+
+@keyframes godLoad{
+ 0%{transform:translateX(-120%)}
+ 100%{transform:translateX(500%)}
+}
+
+/* SUCCESS */
+.god-success{
+ font-size:15px;
+ color:#00ffa6;
+ margin-bottom:14px;
+ text-shadow:0 0 12px rgba(0,255,166,.7);
+ animation:godShake .35s ease;
+}
+
+/* BUTTON GLOW */
+.god-btn{
+ background:#a80000;
+ border:none;
+ padding:8px 22px;
+ color:#fff;
+ border-radius:6px;
+ animation:btnPulse 1.6s ease infinite;
+}
+
+/* ANIMATIONS */
+@keyframes spin{to{transform:translateX(-50%) rotate(360deg)}}
+@keyframes spinReverse{to{transform:translateX(-50%) rotate(-360deg)}}
+@keyframes barRun{0%{transform:translateX(-100%)}100%{transform:translateX(300%)}}
+@keyframes holoMove{0%{transform:translateY(-100%)}100%{transform:translateY(100%)}}
+@keyframes godAppear{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+@keyframes godShake{
+ 0%{transform:translateX(0)}
+ 25%{transform:translateX(-2px)}
+ 50%{transform:translateX(2px)}
+ 100%{transform:translateX(0)}
+}
+@keyframes btnPulse{
+ 0%{box-shadow:0 0 5px rgba(255,0,0,.6)}
+ 50%{box-shadow:0 0 15px rgba(255,0,0,1)}
+ 100%{box-shadow:0 0 5px rgba(255,0,0,.6)}
+}
