@@ -577,7 +577,7 @@ function draw(){
 
  if(isOn("toggleVertical")){
   ctx.save();
-  ctx.translate(c.width-fs(0.008),c.height/2);
+  ctx.translate(c.width-fs(0.01),c.height/2);
   ctx.rotate(-Math.PI/2);
 
   const code=generateCode();
@@ -655,7 +655,7 @@ function draw(){
 }
 
 
-/* ===== WATERMARK STYLE V1 (CLASSIC) ===== */
+/* ===== WATERMARK STYLE V1 (CLASSIC AUTO-BALANCE) ===== */
 function drawStyleV1(){
 
  const pad=fs(0.03);
@@ -667,13 +667,16 @@ function drawStyleV1(){
  const gap=fs(0.03);
 
  const totalH=hBox+gap+hDate+hAddr*2+gap+hCommit;
- let y=c.height-totalH-fs(0.04);
+
+ /* ===== AUTO BALANCE POSITION ===== */
+ const safeBottom = Math.max(fs(0.015), c.height*0.00001);
+ let y = c.height-totalH-safeBottom;
  if(y<pad) y=pad;
 
  /* ===== ĐIỂM DANH – GIỜ ===== */
  ctx.font=`bold ${fs(0.026)}px Arial`;
- const titleText = "ĐIỂM DANH";
-const titleW = ctx.measureText(titleText).width + pad*1.6;
+ const titleText="ĐIỂM DANH";
+ const titleW=ctx.measureText(titleText).width+pad*1.6;
 
  ctx.font=`bold ${fs(0.036)}px Arial`;
  const timeW=ctx.measureText(time.value).width+pad*1.6;
@@ -701,7 +704,6 @@ const titleW = ctx.measureText(titleText).width + pad*1.6;
  ctx.font=`bold ${fs(0.026)}px Arial`;
  ctx.fillText(titleText,pad+titleW/2,y+hBox*0.64);
 
-
  ctx.fillStyle="#1F4FD8";
  ctx.font=`bold ${fs(0.036)}px Arial`;
  ctx.fillText(time.value,pad+titleW+timeW/2,y+hBox*0.64);
@@ -722,8 +724,7 @@ const titleW = ctx.measureText(titleText).width + pad*1.6;
  if(address.value){
   ctx.fillText(address.value,textX,y);
   y+=hAddr;
-}
-
+ }
 
  ctx.fillStyle="#F6B800";
  ctx.fillRect(pad,startY-fs(0.024),fs(0.008),y-startY);
@@ -731,33 +732,52 @@ const titleW = ctx.measureText(titleText).width + pad*1.6;
  y+=gap;
 
  /* ===== CAM KẾT ===== */
- ctx.fillStyle="rgba(255,255,255,0.45)";
+ ctx.fillStyle="rgba(255,255,255,0.6)";
  ctx.font=`${fs(0.023)}px Arial`;
  ctx.fillText("Cam kết ngày giờ chân thực",textX,y);
 
- /* ===== BRAND ===== */
+ /* ===== BRAND AUTO BALANCE ===== */
  ctx.textAlign="right";
  ctx.font=`bold ${fs(0.035)}px Arial`;
+
  const markW=ctx.measureText("mark").width;
+ const brandY = c.height - Math.max(fs(0.015), c.height*0.025);
+
  ctx.fillStyle="#F6B800";
- ctx.fillText("Time",c.width-pad-markW,c.height-pad-fs(0.03));
+ ctx.fillText("Time",c.width-pad-markW,brandY-fs(0.012));
+
  ctx.fillStyle="rgba(255,255,255,0.9)";
- ctx.fillText("mark",c.width-pad,c.height-pad-fs(0.03));
+ ctx.fillText("mark",c.width-pad,brandY-fs(0.012));
+
  ctx.fillStyle="rgba(255,255,255,0.45)";
  ctx.font=`${fs(0.024)}px Arial`;
- ctx.fillText("100% Chân thực",c.width-pad,c.height-pad);
+ ctx.fillText("100% Chân thực",c.width-pad,brandY+fs(0.012));
  ctx.textAlign="left";
 
- /* ===== WATERMARK DỌC ===== */
+ /* ===== WATERMARK DỌC — STYLE V2 ===== */
  ctx.save();
- ctx.translate(c.width-fs(0.004),c.height/2);
- ctx.rotate(-Math.PI/2);
- ctx.fillStyle="rgba(255,255,255,0.70)";
- ctx.font=`${fs(0.016)}px Arial`;
- ctx.textAlign="center";
- ctx.fillText("ⓒ "+generateCode()+" · Timemark Verified",0,0);
- ctx.restore();
 
+ ctx.translate(c.width - fs(0.011), c.height/2);
+ ctx.rotate(-Math.PI/2);
+
+ const code=generateCode();
+ const text=`${code}  Timemark Verified`;
+
+ const fontSize=fs(0.018);
+ ctx.font=`${fontSize}px Arial`;
+ ctx.fillStyle="rgba(255,255,255,0.9)";
+ ctx.textAlign="left";
+ ctx.textBaseline="middle";
+
+ const w=ctx.measureText(text).width;
+
+ if(typeof drawShield==="function"){
+   drawShield(ctx,-w/2 - fs(0.02),0,fs(0.022),"#FFFFFF");
+ }
+
+ ctx.fillText(text,-w/2,0);
+
+ ctx.restore();
 }
 
 function isIOS(){
@@ -936,4 +956,3 @@ document.addEventListener("pointerup",()=>{
 
 </body>
 </html>
-
