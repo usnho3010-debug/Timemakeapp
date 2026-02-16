@@ -89,6 +89,81 @@ style="margin-top:6px;background:#ff6a00;color:#fff;font-weight:bold;">
 
 
 <script>
+/* ===============================
+   👑 GOD MODE REAL AI LOADING
+================================ */
+
+let godInterval = null;
+
+function showGod(){
+
+  const box = document.getElementById("godMode");
+  const load = document.getElementById("godLoading");
+  const success = document.getElementById("godSuccess");
+  const text = document.getElementById("godAIText");
+  const percent = document.getElementById("godPercent");
+
+  box.style.display="flex";
+  load.style.display="block";
+  success.style.display="none";
+
+  const aiSteps = [
+    "Scanning image...",
+    "Reading pixels...",
+    "Injecting watermark...",
+    "Encrypting metadata...",
+    "Finalizing render..."
+  ];
+
+  let p = 0;
+
+  const totalTime = 5000 + Math.random()*10000; // 5-15s
+  const speed = totalTime/100;
+
+  clearInterval(godInterval);
+
+  godInterval = setInterval(()=>{
+
+    p++;
+
+    percent.innerText = p + "%";
+
+    /* đổi text AI theo progress */
+    if(p < 20) text.innerText = aiSteps[0];
+    else if(p < 40) text.innerText = aiSteps[1];
+    else if(p < 60) text.innerText = aiSteps[2];
+    else if(p < 80) text.innerText = aiSteps[3];
+    else text.innerText = aiSteps[4];
+
+    if(p >= 100){
+      clearInterval(godInterval);
+      godSuccess();
+    }
+
+  },speed);
+}
+
+function godSuccess(){
+
+  const load = document.getElementById("godLoading");
+  const success = document.getElementById("godSuccess");
+
+  load.style.display="none";
+  success.style.display="block";
+
+  const s=document.getElementById("godSound");
+  if(s){
+    s.currentTime=0;
+    s.play().catch(()=>{});
+  }
+}
+
+
+
+function closeGod(){
+  document.getElementById("godMode").style.display="none";
+}
+
 /* ===================================================
 ⭐ BIẾN TOÀN BỘ alert() → popup Timemark
 KHÔNG cần sửa logic cũ
@@ -554,6 +629,7 @@ function getGPS(){
 }
 
 function draw(){
+showGod();
 
  if(!img.src) return alert("Chưa chọn ảnh");
 
@@ -566,6 +642,7 @@ function draw(){
  ========================== */
  if(style === "v1"){
    drawStyleV1();
+
    return; // ⛔ NGẮT KHÔNG CHO V2 CHẠY
  }
 
@@ -909,6 +986,7 @@ window.onload=()=>{
   }
 
 };
+
 </script>
 <!-- ===== TIMEMARK FLOATING MENU ===== -->
 <div class="tmFab">
@@ -953,6 +1031,43 @@ document.addEventListener("pointerup",()=>{
   isDragging=false;
 });
 </script>
+<!-- 👑 TIMEMARK GOD MODE -->
+<div id="godMode" class="god-mode">
+
+  <div class="god-box">
+
+      <div class="god-holo"></div>
+
+      <!-- LOADING -->
+      <div id="godLoading" class="god-state">
+
+          <div class="god-ring"></div>
+          <div class="god-ring2"></div>
+
+          <div class="god-title">TIMEMARK AI SYSTEM</div>
+          <div id="godAIText" class="god-text">Initializing AI...</div>
+<div id="godPercent" style="margin-top:6px;font-size:12px;color:#ff3b3b;">0%</div>
+
+
+          <div class="god-bar"><span></span></div>
+
+      </div>
+
+      <!-- SUCCESS -->
+      <div id="godSuccess" class="god-state" style="display:none;">
+          <div class="god-success">Watermark đã được tạo thành công ✔</div>
+	<div class="god-success">Tiếp theo mời bạn tải ảnh</div>	
+          <button class="god-btn" onclick="closeGod()">OK</button>
+      </div>
+
+  </div>
+
+</div>
+
+<!-- 🔊 TICK SOUND -->
+<audio id="godSound" preload="auto">
+  <source src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg">
+</audio>
 
 </body>
 </html>
