@@ -2,6 +2,7 @@
 
 <html lang="vi">
 <head>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <meta charset="UTF-8">
 <title>Timemark Style Pro</title>
 
@@ -72,12 +73,99 @@ style="margin-top:6px;background:#ff6a00;color:#fff;font-weight:bold;">
 <label>Logo</label> <input type="file" id="logoInput" accept="image/*">
 <label>Kiểu Watermark</label>
 <select id="wmStyle">
-  <option value="v2">🚀 Timemark V2 (Mới)</option>
-  <option value="v1">⭐ Timemark V1 (Cổ điển)</option>
+  <option value="v3">🔥 Timemark Pro</option>
+  <option value="v1">⭐ Timemark Classic</option>
 </select>
 
+<!-- ================== THÔNG TIN CHECK-IN ================== -->
+<div class="infoGrid">
 
-<label>Giờ</label> <input id="time"> <label>Ngày</label> <input id="date"> <label>Thứ</label> <input id="weekday"> <label>Địa chỉ</label> <input id="address">
+  <div>
+    <label>Giờ</label>
+    <input id="time">
+  </div>
+
+  <div>
+    <label>Ngày</label>
+    <input id="date">
+  </div>
+
+  <div>
+    <label>Thứ</label>
+    <input id="weekday">
+  </div>
+
+  <div>
+    <label>Địa chỉ</label>
+    <input id="address">
+  </div>
+
+  <div class="fullRow">
+    <label>Họ tên</label>
+    <input id="fullname" placeholder="Nhập Họ tên">
+  </div>
+
+</div>
+
+
+<!-- ================== NÚT MỞ TÙY CHỈNH ================== -->
+<button class="btnToggle" onclick="toggleAdvanced()">
+  <span class="gear">⚙</span>
+  Tùy chỉnh hiển thị
+</button>
+
+<!-- ================== PANEL TÙY CHỈNH (ẨN MẶC ĐỊNH) ================== -->
+<div id="advancedPanel">
+
+  <div class="rowControl">
+    <label>Watermark dọc</label>
+    <label class="switch">
+      <input type="checkbox" id="toggleVertical" checked>
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <div class="rowControl">
+    <label>Thương hiệu</label>
+    <label class="switch">
+      <input type="checkbox" id="toggleBrand" checked>
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <div class="rowControl">
+    <label>Logo</label>
+    <label class="switch">
+      <input type="checkbox" id="toggleLogo" checked>
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <div class="rowControl">
+    <label>Giờ & Ngày</label>
+    <label class="switch">
+      <input type="checkbox" id="toggleTime" checked>
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <div class="rowControl">
+    <label>Địa chỉ</label>
+    <label class="switch">
+      <input type="checkbox" id="toggleAddress" checked>
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <div class="rowControl">
+    <label>Họ tên</label>
+    <label class="switch">
+      <input type="checkbox" id="toggleFullname" checked>
+      <span class="slider"></span>
+    </label>
+  </div>
+
+</div>
 
 <button onclick="setNow()">⏱ Lấy giờ</button> <button onclick="draw()">🖊 Tạo watermark</button> <button onclick="download()">⬇️ Tải ảnh</button>
 
@@ -89,6 +177,13 @@ style="margin-top:6px;background:#ff6a00;color:#fff;font-weight:bold;">
 
 
 <script>
+function toggleAdvanced(){
+  const panel = document.getElementById("advancedPanel");
+  const btn = document.querySelector(".btnToggle");
+
+  panel.classList.toggle("open");
+  btn.classList.toggle("active");
+}
 /* ===============================
    👑 GOD MODE REAL AI LOADING
 ================================ */
@@ -629,107 +724,23 @@ function getGPS(){
 }
 
 function draw(){
-showGod();
 
- if(!img.src) return alert("Chưa chọn ảnh");
+  showGod();
 
- const style = getWMStyle();
+  if(!img.src) return alert("Chưa chọn ảnh");
 
- ctx.drawImage(img,0,0);
+  const style = getWMStyle();
 
- /* =========================
-    ⭐ STYLE V1 → CHẠY RIÊNG
- ========================== */
- if(style === "v1"){
-   drawStyleV1();
+  ctx.drawImage(img,0,0);
 
-   return; // ⛔ NGẮT KHÔNG CHO V2 CHẠY
- }
-
- /* =========================
-    ⭐ STYLE V2 (GIỮ NGUYÊN)
- ========================== */
-
- const pad=fs(0.04);
-
- if(isOn("toggleVertical")){
-  ctx.save();
-  ctx.translate(c.width-fs(0.01),c.height/2);
-  ctx.rotate(-Math.PI/2);
-
-  const code=generateCode();
-  const text=`${code}  Timemark Verified`;
-
-  const fontSize = fs(0.018);
-  ctx.font = `${fontSize}px Arial`;
-  ctx.fillStyle = "rgba(255,255,255,0.9)";
-  ctx.textAlign = "left";
-  ctx.textBaseline = "middle";
-
-  const w=ctx.measureText(text).width;
-
-  drawShield(ctx,-w/2 - fs(0.02),0,fs(0.022),"#FFFFFF");
-
-  ctx.fillText(text,-w/2,0);
-  ctx.restore();
- }
-
- if(isOn("toggleBrand")){
-  let yBrand=c.height-pad;
-  ctx.textAlign="right";
-  ctx.font=`bold ${fs(0.028)}px Arial`;
-
-  ctx.fillStyle="#FFFFFF";
-  ctx.fillText("mark",c.width-pad,yBrand);
-  const wMark=ctx.measureText("mark").width;
-
-  ctx.fillStyle="#FFC107";
-  ctx.fillText("Time",c.width-pad-wMark,yBrand);
-
-  ctx.font=`${fs(0.018)}px Arial`;
-  ctx.fillStyle="rgba(255,255,255,0.5)";
-  ctx.fillText("100% Chân thực",c.width-pad,yBrand+fs(0.03));
- }
-
- ctx.textAlign="left";
- let leftX=pad;
- let y=c.height-pad-fs(0.09);
-
- if(logo.src && isOn("toggleLogo")){
-  const lh=fs(0.085);
-  const ratio=logo.width/logo.height;
-  drawRoundedImage(ctx,logo,leftX,y-lh-fs(0.02),lh*ratio,lh,fs(0.012));
-  y+=fs(0.02);
- }
-
- if(isOn("toggleTime")){
-  ctx.font=`500 ${fs(0.045)}px Arial`;
-  ctx.fillStyle="#FFFFFF";
-  ctx.fillText(time.value,leftX,y+fs(0.015));
-
-  const timeW=ctx.measureText(time.value).width;
-  const lineX=leftX+timeW+fs(0.02);
-
-  ctx.strokeStyle="#FFC107";
-  ctx.lineWidth=fs(0.004);
-  ctx.beginPath();
-  ctx.moveTo(lineX,y-fs(0.028));
-  ctx.lineTo(lineX,y+fs(0.028));
-  ctx.stroke();
-
-  ctx.font=`${fs(0.03)}px Arial`;
-  ctx.fillText(date.value,lineX+fs(0.015),y-fs(0.01));
-  ctx.fillText(weekday.value,lineX+fs(0.015),y+fs(0.03));
- }
-
- if(isOn("toggleAddress")){
-  y+=fs(0.065);
-  ctx.font=`${fs(0.028)}px Arial`;
-  ctx.fillStyle="rgba(255,255,255,0.9)";
-  ctx.fillText(address.value,leftX,y);
- }
+  if(style === "v1"){
+    drawStyleV1();
+  }else{
+    drawStyleV3();
+  }
 
 }
+ 
 
 
 /* ===== WATERMARK STYLE V1 (CLASSIC AUTO-BALANCE) ===== */
@@ -746,9 +757,19 @@ function drawStyleV1(){
  const totalH=hBox+gap+hDate+hAddr*2+gap+hCommit;
 
  /* ===== AUTO BALANCE POSITION ===== */
- const safeBottom = Math.max(fs(0.015), c.height*0.00001);
- let y = c.height-totalH-safeBottom;
- if(y<pad) y=pad;
+const bottomGap = 20; // 20px cố định
+
+// Vị trí dòng cam kết
+let commitY = c.height - bottomGap;
+
+// Tính lại vị trí bắt đầu block
+let y = commitY - (hCommit + gap + hDate + gap + hBox);
+
+if(address.value){
+  y -= hAddr;
+}
+
+if(y < pad) y = pad;
 
  /* ===== ĐIỂM DANH – GIỜ ===== */
  ctx.font=`bold ${fs(0.026)}px Arial`;
@@ -808,10 +829,13 @@ function drawStyleV1(){
 
  y+=gap;
 
- /* ===== CAM KẾT ===== */
- ctx.fillStyle="rgba(255,255,255,0.6)";
- ctx.font=`${fs(0.023)}px Arial`;
- ctx.fillText("Cam kết ngày giờ chân thực",textX,y);
+/* ===== CAM KẾT ===== */
+
+ctx.fillStyle="rgba(255,255,255,0.6)";
+ctx.font=`${fs(0.023)}px Arial`;
+
+// căn trái đúng vị trí thanh vàng
+ctx.fillText("Cam kết ngày giờ chân thực", pad, y);
 
  /* ===== BRAND AUTO BALANCE ===== */
  ctx.textAlign="right";
@@ -857,6 +881,151 @@ function drawStyleV1(){
  ctx.restore();
 }
 
+
+function drawStyleV3(){
+
+  const pad = fs(0.04);
+  let leftX = pad;
+
+  /* =============================
+     VERTICAL WATERMARK
+  ============================== */
+  if(isOn("toggleVertical")){
+    ctx.save();
+    ctx.translate(c.width - fs(0.01), c.height/2);
+    ctx.rotate(-Math.PI/2);
+
+    const code = generateCode();
+    const text = `${code}  Timemark Verified`;
+
+    ctx.font = `${fs(0.018)}px Arial`;
+    ctx.fillStyle = "rgba(255,255,255,0.9)";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "middle";
+
+    const w = ctx.measureText(text).width;
+
+    drawShield(ctx, -w/2 - fs(0.02), 0, fs(0.022), "#FFFFFF");
+    ctx.fillText(text, -w/2, 0);
+
+    ctx.restore();
+  }
+
+  /* =============================
+     BRAND
+  ============================== */
+  if(isOn("toggleBrand")){
+    let yBrand = c.height - pad;
+
+    ctx.textAlign = "right";
+    ctx.font = `bold ${fs(0.028)}px Arial`;
+
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillText("mark", c.width - pad, yBrand);
+
+    const wMark = ctx.measureText("mark").width;
+
+    ctx.fillStyle = "#FFC107";
+    ctx.fillText("Time", c.width - pad - wMark, yBrand);
+
+    ctx.font = `${fs(0.018)}px Arial`;
+    ctx.fillStyle = "rgba(255,255,255,0.5)";
+    ctx.fillText("100% Chân thực", c.width - pad, yBrand + fs(0.03));
+
+    ctx.textAlign = "left";
+  }
+
+  /* =============================
+     CONTENT BLOCK AUTO STACK
+  ============================== */
+
+  let y = c.height - pad - fs(0.13);
+
+  // LOGO
+  if(logo.src && isOn("toggleLogo")){
+    const lh = fs(0.085);
+    const ratio = logo.width/logo.height;
+
+    drawRoundedImage(
+      ctx,
+      logo,
+      leftX,
+      y - lh - fs(0.02),
+      lh * ratio,
+      lh,
+      fs(0.012)
+    );
+
+    y += fs(0.02);
+  }
+
+  // TIME + DATE
+  if(isOn("toggleTime")){
+
+    ctx.font = `500 ${fs(0.045)}px Arial`;
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillText(time.value, leftX, y + fs(0.015));
+
+    const timeW = ctx.measureText(time.value).width;
+    const lineX = leftX + timeW + fs(0.02);
+
+    ctx.strokeStyle = "#FFC107";
+    ctx.lineWidth = fs(0.004);
+    ctx.beginPath();
+    ctx.moveTo(lineX, y - fs(0.028));
+    ctx.lineTo(lineX, y + fs(0.028));
+    ctx.stroke();
+
+    ctx.font = `${fs(0.03)}px Arial`;
+    ctx.fillText(date.value, lineX + fs(0.015), y - fs(0.01));
+    ctx.fillText(weekday.value, lineX + fs(0.015), y + fs(0.03));
+
+    y += fs(0.065);
+  }
+
+  // ADDRESS
+  if(isOn("toggleAddress") && address.value){
+
+    ctx.font = `${fs(0.028)}px Arial`;
+    ctx.fillStyle = "rgba(255,255,255,0.9)";
+    ctx.fillText(address.value, leftX, y);
+
+    y += fs(0.055);
+  }
+
+  // FULL NAME
+  if(isOn("toggleFullname")){
+
+    const nameVal = document.getElementById("fullname")?.value?.trim();
+
+    if(nameVal){
+
+      const nameText = "Họ tên: " + nameVal;
+
+      ctx.font = `${fs(0.028)}px Arial`;
+      const textW = ctx.measureText(nameText).width;
+
+      const boxPad = fs(0.02);
+      const boxHeight = fs(0.05);
+
+      ctx.fillStyle = "rgba(255,255,255,0.18)";
+      roundRect(
+        ctx,
+        leftX - boxPad,
+        y - boxHeight + fs(0.01),
+        textW + boxPad * 2,
+        boxHeight,
+        fs(0.015)
+      );
+
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fillText(nameText, leftX, y);
+
+      y += fs(0.06);
+    }
+  }
+
+}
 function isIOS(){
  return /iPhone|iPad|iPod/i.test(navigator.userAgent);
 }
