@@ -474,3 +474,138 @@ z-index:99999;
  50%{box-shadow:0 0 15px rgba(255,0,0,1)}
  100%{box-shadow:0 0 5px rgba(255,0,0,.6)}
 }
+/* ===============================
+   COMPACT ROW (gọn & cân đối)
+================================ */
+.rowControl{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:6px 10px;
+  margin:5px 0;
+  border-radius:10px;
+  background:rgba(0,0,0,0.25);
+  backdrop-filter:blur(6px);
+  font-size:13px;
+  transition:.25s;
+}
+
+.rowControl:hover{
+  background:rgba(0,0,0,0.35);
+}
+
+/* ===============================
+   MINI TOGGLE PREMIUM
+================================ */
+.switch{
+  position:relative;
+  width:46px;
+  height:22px;
+}
+
+.switch input{
+  opacity:0;
+  width:0;
+  height:0;
+}
+
+.slider{
+  position:absolute;
+  inset:0;
+  cursor:pointer;
+  background:#1c1c1c;
+  border-radius:50px;
+  transition:.3s;
+  display:flex;
+  align-items:center;
+  padding:0 6px;
+  font-size:9px;
+  font-weight:600;
+  letter-spacing:.5px;
+  color:#888;
+  box-shadow:inset 0 0 6px rgba(0,0,0,.6);
+}
+
+.slider::after{
+  content:"OFF";
+  margin-left:auto;
+}
+
+.slider:before{
+  content:"";
+  position:absolute;
+  width:18px;
+  height:18px;
+  left:2px;
+  top:2px;
+  background:#fff;
+  border-radius:50%;
+  transition:.3s;
+  box-shadow:0 3px 8px rgba(0,0,0,.4);
+}
+
+/* ON STATE */
+.switch input:checked + .slider{
+  background:linear-gradient(135deg,#ffb300,#ff6a00);
+  color:#fff;
+  box-shadow:0 0 8px rgba(255,140,0,.7);
+}
+
+.switch input:checked + .slider::after{
+  content:"ON";
+  margin-left:6px;
+}
+
+.switch input:checked + .slider:before{
+  transform:translateX(24px);
+}
+
+/* ===============================
+   PANEL TRƯỢT MỀM (slide real)
+================================ */
+#advancedPanel{
+  overflow:hidden;
+  max-height:0;
+  opacity:0;
+  transform:translateY(-5px);
+  transition:max-height .45s ease, opacity .3s ease, transform .3s ease;
+}
+
+#advancedPanel.open{
+  max-height:600px;
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* ===============================
+   NÚT TÙY CHỈNH (compact + icon xoay)
+================================ */
+.btnToggle{
+  width:100%;
+  padding:8px;
+  margin:8px 0;
+  border-radius:10px;
+  border:1px solid rgba(0,255,255,0.35);
+  background:rgba(0,150,200,0.15);
+  color:#fff;
+  font-size:13px;
+  cursor:pointer;
+  transition:.3s;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:6px;
+}
+
+.btnToggle:hover{
+  background:rgba(0,200,255,0.25);
+}
+
+.btnToggle .gear{
+  display:inline-block;
+  transition:.3s;
+}
+
+.btnToggle.active .gear{
+  transform:rotate(90deg);
+}
