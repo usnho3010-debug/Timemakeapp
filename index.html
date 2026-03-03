@@ -63,7 +63,7 @@ style="margin-top:6px;background:#ff6a00;color:#fff;font-weight:bold;">
 <div class="app">
 <header class="header">
   <h2>🚀 TIMEMARK PREMIUM</h2>
-  <p>🌸 Hệ Thống vừa được Update- vui Long cài lại APP 🌸</p>
+  <p>🌸 Chúc mừng năm mới – An khang · Thịnh vượng 🌸</p>
 </header>
 
 <div class="controls">
@@ -371,7 +371,7 @@ showNotify(
 🔥 Còn lại: ${left} ngày
 ⏳ Hết hạn: ${expire}
 
-👉 Đội ngũ timemark Premium xin cảm ơn bạn!`
+👉 Chúc bạn sử dụng Timemark hiệu quả`
 );
 
 })
@@ -663,7 +663,7 @@ function setNow(){
  const day=String(d.getDate()).padStart(2,'0');
  const month=d.getMonth()+1;
  const year=d.getFullYear();
- date.value=`${day} Tháng ${month}, ${year}`;
+ date.value=`${day} tháng ${month}, ${year}`;
  weekday.value=d.toLocaleDateString("vi-VN",{weekday:'long'});
 }
 
@@ -883,149 +883,292 @@ ctx.fillText("Cam kết ngày giờ chân thực", pad, y);
 
 
 function drawStyleV3(){
+const timeText = time.value || "";
+const dateText = date.value || "";
+const weekdayText = weekday.value || "";
+
+  ctx.drawImage(img,0,0);
 
   const pad = fs(0.04);
-  let leftX = pad;
+  const safeEdge = fs(0.01);     // an toàn mép phải
+  const bottomSafe = fs(0.015);
+  const leftX = pad;
 
-  /* =============================
-     VERTICAL WATERMARK
-  ============================== */
+  ctx.textBaseline = "alphabetic";
+  ctx.textAlign = "left";
+  ctx.shadowColor = "rgba(0,0,0,0.25)";
+  ctx.shadowBlur = 6;
+
+  // =====================================================
+  // 1️⃣ WATERMARK DỌC
+  // =====================================================
+
   if(isOn("toggleVertical")){
+
     ctx.save();
-    ctx.translate(c.width - fs(0.01), c.height/2);
+    ctx.translate(c.width - safeEdge, c.height/2);
     ctx.rotate(-Math.PI/2);
 
     const code = generateCode();
     const text = `${code}  Timemark Verified`;
 
     ctx.font = `${fs(0.018)}px Arial`;
-    ctx.fillStyle = "rgba(255,255,255,0.9)";
+    ctx.fillStyle = "rgba(255,255,255,0.85)";
     ctx.textAlign = "left";
     ctx.textBaseline = "middle";
 
     const w = ctx.measureText(text).width;
 
-    drawShield(ctx, -w/2 - fs(0.02), 0, fs(0.022), "#FFFFFF");
-    ctx.fillText(text, -w/2, 0);
+    drawShield(ctx,-w/2 - fs(0.02),0,fs(0.022),"#FFFFFF");
 
+    ctx.fillText(text,-w/2,0);
     ctx.restore();
   }
 
-  /* =============================
-     BRAND
-  ============================== */
+  // =====================================================
+  // 2️⃣ BRAND TIMEMARK (GÓC PHẢI DƯỚI)
+  // =====================================================
+
   if(isOn("toggleBrand")){
-    let yBrand = c.height - pad;
 
-    ctx.textAlign = "right";
-    ctx.font = `bold ${fs(0.028)}px Arial`;
+  ctx.textAlign = "left";
+  ctx.textBaseline = "alphabetic";
 
-    ctx.fillStyle = "#FFFFFF";
-    ctx.fillText("mark", c.width - pad, yBrand);
+  const brandFont = fs(0.038);
+  const subFont   = fs(0.023);
+  const gap       = fs(0.006);
 
-    const wMark = ctx.measureText("mark").width;
+  const rightEdge = c.width - fs(0.02);
 
-    ctx.fillStyle = "#FFC107";
-    ctx.fillText("Time", c.width - pad - wMark, yBrand);
+  // đo tổng width "Timemark"
+  ctx.font = `bold ${brandFont}px Arial`;
+  const fullWidth = ctx.measureText("Timemark").width;
 
-    ctx.font = `${fs(0.018)}px Arial`;
-    ctx.fillStyle = "rgba(255,255,255,0.5)";
-    ctx.fillText("100% Chân thực", c.width - pad, yBrand + fs(0.03));
+  const startX = rightEdge - fullWidth;
 
-    ctx.textAlign = "left";
-  }
+  const baseY = c.height - fs(0.02);
 
-  /* =============================
-     CONTENT BLOCK AUTO STACK
-  ============================== */
+  // ===== DÒNG 1 =====
+  ctx.fillStyle = "#FFC107";
+  ctx.fillText("Time", startX, baseY - subFont - gap);
 
-  let y = c.height - pad - fs(0.13);
+  const timeW = ctx.measureText("Time").width;
+
+  ctx.fillStyle = "#FFFFFF";
+  ctx.fillText("mark", startX + timeW, baseY - subFont - gap);
+
+  // ===== DÒNG 2 =====
+  ctx.font = `${subFont}px Arial`;
+  ctx.fillStyle = "rgba(255,255,255,0.6)";
+  ctx.fillText("100% Chân thực", startX, baseY);
+
+}
+
+  // =====================================================
+  // 3️⃣ BUILD STACK BLOCK (BOTTOM ANCHORED)
+  // =====================================================
+
+  const blocks = [];
 
   // LOGO
   if(logo.src && isOn("toggleLogo")){
     const lh = fs(0.085);
     const ratio = logo.width/logo.height;
-
-    drawRoundedImage(
-      ctx,
-      logo,
-      leftX,
-      y - lh - fs(0.02),
-      lh * ratio,
-      lh,
-      fs(0.012)
-    );
-
-    y += fs(0.02);
+    blocks.push({
+      type:"logo",
+      width: lh*ratio,
+      height: lh,
+      margin: fs(0.015)
+    });
   }
 
-  // TIME + DATE
+  // TIME
   if(isOn("toggleTime")){
 
-    ctx.font = `500 ${fs(0.045)}px Arial`;
-    ctx.fillStyle = "#FFFFFF";
-    ctx.fillText(time.value, leftX, y + fs(0.015));
+  const rightFont = fs(0.028);
+  const gap = fs(0.006);
 
-    const timeW = ctx.measureText(time.value).width;
-    const lineX = leftX + timeW + fs(0.02);
+  ctx.font = `${rightFont}px Arial`;
 
-    ctx.strokeStyle = "#FFC107";
-    ctx.lineWidth = fs(0.004);
-    ctx.beginPath();
-    ctx.moveTo(lineX, y - fs(0.028));
-    ctx.lineTo(lineX, y + fs(0.028));
-    ctx.stroke();
+  const dateMetrics = ctx.measureText(date.value || "");
+  const weekdayMetrics = ctx.measureText(weekday.value || "");
 
-    ctx.font = `${fs(0.03)}px Arial`;
-    ctx.fillText(date.value, lineX + fs(0.015), y - fs(0.01));
-    ctx.fillText(weekday.value, lineX + fs(0.015), y + fs(0.03));
+  const dateHeight =
+    dateMetrics.actualBoundingBoxAscent +
+    dateMetrics.actualBoundingBoxDescent;
 
-    y += fs(0.065);
-  }
+  const weekdayHeight =
+    weekdayMetrics.actualBoundingBoxAscent +
+    weekdayMetrics.actualBoundingBoxDescent;
+
+  const blockHeight = dateHeight + gap + weekdayHeight;
+
+  blocks.push({
+    type:"time",
+    height:blockHeight,
+    margin:fs(0.015)
+  });
+}
 
   // ADDRESS
   if(isOn("toggleAddress") && address.value){
-
-    ctx.font = `${fs(0.028)}px Arial`;
-    ctx.fillStyle = "rgba(255,255,255,0.9)";
-    ctx.fillText(address.value, leftX, y);
-
-    y += fs(0.055);
+    blocks.push({
+      type:"address",
+      height:fs(0.03),
+      margin:fs(0.012)
+    });
   }
 
-  // FULL NAME
-  if(isOn("toggleFullname")){
+  // FULLNAME
+  const nameVal = fullname.value?.trim();
+  if(isOn("toggleFullname") && nameVal){
+    blocks.push({
+      type:"fullname",
+      height:fs(0.045),
+      margin:0
+    });
+  }
 
-    const nameVal = document.getElementById("fullname")?.value?.trim();
+  // =====================================================
+  // 4️⃣ CALC TOTAL HEIGHT
+  // =====================================================
 
-    if(nameVal){
+  const totalHeight = blocks.reduce((sum,b,i)=>{
+    const isLast = i === blocks.length-1;
+    return sum + b.height + (isLast ? 0 : b.margin);
+  },0);
 
-      const nameText = "Họ tên: " + nameVal;
+  let currentY = c.height - bottomSafe - totalHeight;
 
-      ctx.font = `${fs(0.028)}px Arial`;
-      const textW = ctx.measureText(nameText).width;
+  // =====================================================
+  // 5️⃣ RENDER STACK
+  // =====================================================
 
-      const boxPad = fs(0.02);
-      const boxHeight = fs(0.05);
+  blocks.forEach((b,index)=>{
 
-      ctx.fillStyle = "rgba(255,255,255,0.18)";
-      roundRect(
+    if(b.type==="logo"){
+
+      drawRoundedImage(
         ctx,
-        leftX - boxPad,
-        y - boxHeight + fs(0.01),
-        textW + boxPad * 2,
-        boxHeight,
+        logo,
+        leftX,
+        currentY,
+        b.width,
+        b.height,
         fs(0.015)
       );
 
-      ctx.fillStyle = "#FFFFFF";
-      ctx.fillText(nameText, leftX, y);
-
-      y += fs(0.06);
+      currentY += b.height;
     }
-  }
 
+  if(b.type==="time"){
+
+  const timeFont = fs(0.055);
+  const rightFont = fs(0.028);
+  const gap = fs(0.006);
+
+  // ===== VẼ GIỜ =====
+  ctx.font = `500 ${timeFont}px Arial`;
+  ctx.textBaseline = "top";
+  ctx.fillStyle = "#fff";
+
+  const timeWidth = ctx.measureText(timeText).width;
+  ctx.fillText(timeText, leftX, currentY);
+
+  const lineX = leftX + timeWidth + fs(0.02);
+
+  // ===== TÍNH CHIỀU CAO DATE + WEEKDAY =====
+  ctx.font = `${rightFont}px Arial`;
+
+  const dateMetrics = ctx.measureText(dateText);
+  const weekdayMetrics = ctx.measureText(weekdayText);
+
+  const dateHeight =
+    dateMetrics.actualBoundingBoxAscent +
+    dateMetrics.actualBoundingBoxDescent;
+
+  const weekdayHeight =
+    weekdayMetrics.actualBoundingBoxAscent +
+    weekdayMetrics.actualBoundingBoxDescent;
+
+  const totalRightHeight = dateHeight + gap + weekdayHeight;
+
+  // ===== VẼ THANH VÀNG =====
+  ctx.strokeStyle = "#FFC107";
+  ctx.lineWidth = fs(0.004);
+
+  ctx.beginPath();
+  ctx.moveTo(lineX, currentY);
+  ctx.lineTo(lineX, currentY + totalRightHeight);
+  ctx.stroke();
+
+  // ===== VẼ DATE & WEEKDAY =====
+  ctx.textBaseline = "top";
+  ctx.fillText(dateText, lineX + fs(0.015), currentY);
+  ctx.fillText(
+    weekdayText,
+    lineX + fs(0.015),
+    currentY + dateHeight + gap
+  );
+
+  ctx.textBaseline = "alphabetic";
+
+  currentY += totalRightHeight;
 }
+
+    if(b.type==="address"){
+      ctx.font = `${fs(0.03)}px Arial`;
+      ctx.fillStyle="rgba(255,255,255,0.9)";
+      ctx.fillText(address.value,leftX,currentY + fs(0.022));
+      currentY += b.height;
+    }
+
+    if(b.type==="fullname"){
+
+      const nameText = "Họ tên: " + nameVal;
+const fontSize = fs(0.028);
+ctx.font = `${fontSize}px Arial`;
+
+const textW = ctx.measureText(nameText).width;
+
+const paddingX = fs(0.015);
+const paddingY = fs(0.010);
+
+const boxHeight = fontSize + paddingY*2;
+
+// 👇 THÊM DÒNG NÀY (màu nền box)
+ctx.fillStyle = "rgba(255,255,255,0.18)";  // ← chỉnh opacity ở đây
+
+roundRect(
+  ctx,
+  leftX - paddingX,
+  currentY,
+  textW + paddingX*2,
+  boxHeight,
+  fs(0.012)
+);
+
+// chữ
+ctx.fillStyle = "#fff";
+ctx.fillText(
+  nameText,
+  leftX,
+  currentY + paddingY + fontSize*0.8
+);
+
+currentY += boxHeight;
+    }
+
+    if(index !== blocks.length-1){
+      currentY += b.margin;
+    }
+
+  });
+
+  ctx.shadowBlur = 0;
+}
+
+
 function isIOS(){
  return /iPhone|iPad|iPod/i.test(navigator.userAgent);
 }
@@ -1240,8 +1383,4 @@ document.addEventListener("pointerup",()=>{
 
 </body>
 </html>
-
-
-
-
 
