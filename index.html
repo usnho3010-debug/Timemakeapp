@@ -6,6 +6,7 @@
 <meta charset="UTF-8">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <title>Timemark Style Pro</title>
 
 <!-- ⭐ THEME TÁCH RIÊNG -->
@@ -65,7 +66,7 @@ style="margin-top:6px;background:#ff6a00;color:#fff;font-weight:bold;">
 <div class="app">
 <header class="header">
   <h2>🚀 TIMEMARK PREMIUM</h2>
-  <p>Chuyên nghiệp- tiện lợi</p>
+  <p>🌸 Hệ Thống vừa được Update- vui Long cài lại APP 🌸</p>
 </header>
 
 <div class="controls">
@@ -75,8 +76,8 @@ style="margin-top:6px;background:#ff6a00;color:#fff;font-weight:bold;">
 <label>Logo</label> <input type="file" id="logoInput" accept="image/*">
 <label>Kiểu Watermark</label>
 <select id="wmStyle">
-  <option value="v3">🔥 Kiểu 2</option>
-  <option value="v1">⭐ Kiểu 1</option>
+  <option value="v3">🔥 Timemark Pro</option>
+  <option value="v1">⭐ Timemark Classic</option>
 </select>
 
 <!-- ================== THÔNG TIN CHECK-IN ================== -->
@@ -84,22 +85,22 @@ style="margin-top:6px;background:#ff6a00;color:#fff;font-weight:bold;">
 
   <div>
     <label>Giờ</label>
-    <input id="time">
+<input id="time" placeholder="Nhập giờ (VD: 13:50)">
   </div>
 
   <div>
     <label>Ngày</label>
-    <input id="date">
+    <input id="date" placeholder="10 Tháng 3, 2026">
   </div>
 
   <div>
     <label>Thứ</label>
-    <input id="weekday">
+    <input id="weekday" placeholder="Thứ Ba">
   </div>
 
   <div>
     <label>Địa chỉ</label>
-    <input id="address">
+    <input id="address"placeholder="Nhập địa chỉ ">
   </div>
 
   <div class="fullRow">
@@ -120,7 +121,7 @@ style="margin-top:6px;background:#ff6a00;color:#fff;font-weight:bold;">
 <div id="advancedPanel">
 
   <div class="rowControl">
-    <label>Watermark dọc</label>
+    <label>Mã ảnh</label>
     <label class="switch">
       <input type="checkbox" id="toggleVertical" checked>
       <span class="slider"></span>
@@ -169,7 +170,7 @@ style="margin-top:6px;background:#ff6a00;color:#fff;font-weight:bold;">
 
 </div>
 
-<button onclick="setNow()">⏱ Lấy giờ</button> <button onclick="draw()">🖊 Tạo watermark</button> <button onclick="download()">⬇️ Tải ảnh</button>
+ <button onclick="draw()">🖊 Tạo Ảnh</button> <button onclick="download()">⬇️ Tải ảnh</button>
 
 </div>
 
@@ -725,7 +726,9 @@ function getGPS(){
   );
 }
 
-function draw(){
+async function draw(){
+
+  await document.fonts.ready;
 
   showGod();
 
@@ -1310,7 +1313,6 @@ document.addEventListener("pointerup",()=>{
 
 </body>
 </html>
-
 
 
 
