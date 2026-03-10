@@ -4,6 +4,8 @@
 <head>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
 <title>Timemark Style Pro</title>
 
 <!-- ⭐ THEME TÁCH RIÊNG -->
@@ -892,13 +894,13 @@ function drawStyleV3(){
   ============================== */
   if(isOn("toggleVertical")){
     ctx.save();
-    ctx.translate(c.width - fs(0.01), c.height/2);
+    ctx.translate(c.width - fs(0.015), c.height/2);
     ctx.rotate(-Math.PI/2);
 
     const code = generateCode();
     const text = `${code}  Timemark Verified`;
 
-    ctx.font = `${fs(0.018)}px Arial`;
+    ctx.font = `${fs(0.025)}px Arial`;
     ctx.fillStyle = "rgba(255,255,255,1)";
     ctx.textAlign = "left";
     ctx.textBaseline = "middle";
@@ -968,7 +970,7 @@ if(isOn("toggleTime")){
   // chiều cao thực của chữ giờ
   const timeHeight = fontSize * scaleY;
 
-  ctx.font = `500 ${fontSize}px Arial`;
+ ctx.font = `700 ${fontSize}px "Barlow Condensed"`;
   ctx.fillStyle = "#FFFFFF";
 
   ctx.save();
@@ -1035,11 +1037,9 @@ ctx.stroke();
 
   /* ===== DATE + WEEKDAY ===== */
 
-  ctx.font = `${fs(0.03) * 0.765}px Arial`;
+const rightX = lineX + fs(0.02);
 
-  const rightX = lineX + fs(0.02);
-
- const dateFont = fs(0.03) * 0.765;
+ const dateFont = fs(0.04) * 0.765;
 
 ctx.font = `${dateFont}px Arial`;
 
