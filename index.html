@@ -899,7 +899,7 @@ function drawStyleV3(){
     const text = `${code}  Timemark Verified`;
 
     ctx.font = `${fs(0.018)}px Arial`;
-    ctx.fillStyle = "rgba(255,255,255,0.9)";
+    ctx.fillStyle = "rgba(255,255,255,1)";
     ctx.textAlign = "left";
     ctx.textBaseline = "middle";
 
@@ -939,7 +939,7 @@ function drawStyleV3(){
      CONTENT BLOCK AUTO STACK
   ============================== */
 
-  let y = c.height - pad - fs(0.13);
+  let y = c.height - pad - fs(0.16);
 
   // LOGO
   if(logo.src && isOn("toggleLogo")){
@@ -950,7 +950,7 @@ function drawStyleV3(){
       ctx,
       logo,
       leftX,
-      y - lh - fs(0.02),
+      y - lh - fs(0.002),
       lh * ratio,
       lh,
       fs(0.012)
@@ -959,36 +959,106 @@ function drawStyleV3(){
     y += fs(0.02);
   }
 
-  // TIME + DATE
-  if(isOn("toggleTime")){
+// TIME + DATE
+if(isOn("toggleTime")){
 
-    ctx.font = `500 ${fs(0.045)}px Arial`;
-    ctx.fillStyle = "#FFFFFF";
-    ctx.fillText(time.value, leftX, y + fs(0.015));
+  const scaleY = 1.95;
+  const fontSize = fs(0.045);
 
-    const timeW = ctx.measureText(time.value).width;
-    const lineX = leftX + timeW + fs(0.02);
+  // chiều cao thực của chữ giờ
+  const timeHeight = fontSize * scaleY;
 
-    ctx.strokeStyle = "#FFC107";
-    ctx.lineWidth = fs(0.004);
-    ctx.beginPath();
-    ctx.moveTo(lineX, y - fs(0.028));
-    ctx.lineTo(lineX, y + fs(0.028));
-    ctx.stroke();
+  ctx.font = `500 ${fontSize}px Arial`;
+  ctx.fillStyle = "#FFFFFF";
 
-    ctx.font = `${fs(0.03)}px Arial`;
-    ctx.fillText(date.value, lineX + fs(0.015), y - fs(0.01));
-    ctx.fillText(weekday.value, lineX + fs(0.015), y + fs(0.03));
+  ctx.save();
 
-    y += fs(0.065);
-  }
+  // baseline chữ giờ
+  const baseY = y + timeHeight * 0.82;
+
+  ctx.translate(leftX, baseY);
+  ctx.scale(1, scaleY);
+
+ const [h, m] = time.value.split(":");
+
+// vẽ giờ
+ctx.fillText(h, 0, 0);
+
+const hourWidth = ctx.measureText(h).width;
+
+// vị trí dấu :
+const colonX = hourWidth + fs(0.012);
+
+// kích thước vuông
+const dotSize = fs(0.006);
+
+// dịch dấu ":" lên
+const colonOffsetY = -fs(0.016);
+
+// chấm trên
+ctx.fillRect(
+  colonX,
+  colonOffsetY - fs(0.002),
+  dotSize,
+  dotSize
+);
+
+// chấm dưới (bằng đáy chữ giờ)
+ctx.fillRect(
+  colonX,
+  colonOffsetY + fs(0.01),
+  dotSize,
+  dotSize
+);
+
+// vẽ phút
+ctx.fillText(m, hourWidth + fs(0.025), 0);
+
+  ctx.restore();
+
+  const timeW = ctx.measureText(time.value).width;
+  const lineX = leftX + timeW + fs(0.032);
+
+  /* ===== THANH VÀNG ===== */
+
+  ctx.strokeStyle = "#FFC107";
+  ctx.lineWidth = fs(0.004);
+
+  ctx.beginPath();
+  const lineHeight = timeHeight * 0.78;   // giảm chiều cao thanh
+const lineTop = y + (timeHeight - lineHeight) / 2;
+
+ctx.beginPath();
+ctx.moveTo(lineX, lineTop);
+ctx.lineTo(lineX, lineTop + lineHeight);
+ctx.stroke();
+
+  /* ===== DATE + WEEKDAY ===== */
+
+  ctx.font = `${fs(0.03) * 0.765}px Arial`;
+
+  const rightX = lineX + fs(0.02);
+
+ const dateFont = fs(0.03) * 0.765;
+
+ctx.font = `${dateFont}px Arial`;
+
+const topY = y;
+const bottomY = y + timeHeight;
+
+ctx.fillText(date.value, rightX, y + timeHeight * 0.30);
+ctx.fillText(weekday.value, rightX, y + timeHeight * 0.90);
+  /* ===== STACK ===== */
+
+  y += timeHeight + fs(0.02);
+}
 
   // ADDRESS
   if(isOn("toggleAddress") && address.value){
 
     ctx.font = `${fs(0.028)}px Arial`;
-    ctx.fillStyle = "rgba(255,255,255,0.9)";
-    ctx.fillText(address.value, leftX, y);
+    ctx.fillStyle = "rgba(255,255,255,1)";
+    ctx.fillText(address.value, leftX, y + fs(0.01));
 
     y += fs(0.055);
   }
