@@ -76,8 +76,9 @@ style="margin-top:6px;background:#ff6a00;color:#fff;font-weight:bold;">
 <label>Logo</label> <input type="file" id="logoInput" accept="image/*">
 <label>Kiểu Watermark</label>
 <select id="wmStyle">
-  <option value="v3">🔥 Timemark Pro</option>
-  <option value="v1">⭐ Timemark Classic</option>
+  <option value="v3">🔥 Kiểu 2 (Nên dùng</option>
+  <option value="v4">🆕 Kiểu 3 ( đang test)</option>
+  <option value="v1">⭐ Kiểu 1</option>
 </select>
 
 <!-- ================== THÔNG TIN CHECK-IN ================== -->
@@ -107,6 +108,15 @@ style="margin-top:6px;background:#ff6a00;color:#fff;font-weight:bold;">
     <label>Họ tên</label>
     <input id="fullname" placeholder="Nhập Họ tên">
   </div>
+<div class="fullRow">
+<label>Tiêu đề dòng 1</label>
+<input id="title1" placeholder="Ví dụ: Tuần tra">
+</div>
+
+<div class="fullRow">
+<label>Tiêu đề dòng 2</label>
+<input id="title2" placeholder="Ví dụ: Hồ sơ công việc">
+</div>
 
 </div>
 
@@ -739,10 +749,14 @@ async function draw(){
   ctx.drawImage(img,0,0);
 
   if(style === "v1"){
-    drawStyleV1();
-  }else{
-    drawStyleV3();
-  }
+  drawStyleV1();
+}
+else if(style === "v3"){
+  drawStyleV3();
+}
+else if(style === "v4"){
+  drawStyleV4();
+}
 
 }
  
@@ -1096,9 +1110,301 @@ ctx.fillText(weekday.value, rightX, y + timeHeight * 0.90);
 
       y += fs(0.06);
     }
-  }
+     }
+}
+
+function measureLines(ctx,text,maxWidth){
+
+const words = text.split(" ");
+let line="";
+let lines=1;
+
+for(let n=0;n<words.length;n++){
+
+let testLine=line+words[n]+" ";
+let metrics=ctx.measureText(testLine);
+
+if(metrics.width > maxWidth && n>0){
+lines++;
+line=words[n]+" ";
+}else{
+line=testLine;
+}
 
 }
+
+return lines;
+}
+function drawStyleV4(){
+const pad = fs(0.03);
+  /* =============================
+     VERTICAL WATERMARK
+  ============================== */
+  if(isOn("toggleVertical")){
+    ctx.save();
+    ctx.translate(c.width - fs(0.015), c.height/2);
+    ctx.rotate(-Math.PI/2);
+
+    const code = generateCode();
+    const text = `${code}  Timemark Verified`;
+
+    ctx.font = `${fs(0.025)}px Arial`;
+    ctx.fillStyle = "rgba(255,255,255,1)";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "middle";
+
+    const w = ctx.measureText(text).width;
+
+    drawShield(ctx, -w/2 - fs(0.02), 0, fs(0.022), "#FFFFFF");
+    ctx.fillText(text, -w/2, 0);
+
+    ctx.restore();
+  }
+
+  /* =============================
+     BRAND
+  ============================== */
+  if(isOn("toggleBrand")){
+    let yBrand = c.height - pad - fs(0.02);
+
+    ctx.textAlign = "right";
+    ctx.font = `bold ${fs(0.028)}px Arial`;
+
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillText("mark", c.width - pad, yBrand);
+
+    const wMark = ctx.measureText("mark").width;
+
+    ctx.fillStyle = "#FFC107";
+    ctx.fillText("Time", c.width - pad - wMark, yBrand);
+
+    ctx.font = `${fs(0.018)}px Arial`;
+    ctx.fillStyle = "rgba(255,255,255,0.5)";
+    ctx.fillText("100% Chân thực", c.width - pad, yBrand + fs(0.03));
+
+    ctx.textAlign = "left";
+  }
+
+const title1 = document.getElementById("title1")?.value || "Tuần tra";
+const title2 = document.getElementById("title2")?.value || "Hồ sơ công việc";
+
+let boxW = c.width * 0.38;
+let boxH = c.height * 0.21;
+
+const x = fs(0.03);
+
+/* ===== TÍNH CHIỀU CAO ADDRESS ===== */
+
+ctx.font = `${fs(0.026)}px Roboto`;
+
+const maxAddressWidth = boxW * 0.85;
+
+const addressLines = measureLines(ctx,address.value || "",maxAddressWidth);
+
+const lineHeight = fs(0.035);
+
+/* chiều cao block address */
+
+const addressHeight = addressLines * lineHeight;
+
+/* size logo */
+
+const logoSize = boxH * 0.25;
+
+/* khoảng cách từ top block xuống address */
+
+const arrowOffset = logoSize + fs(0.07);
+const timeOffset = arrowOffset + fs(0.08);
+
+/* vị trí address */
+
+const addressOffset = timeOffset + fs(0.05);
+
+/* chiều cao cần thiết */
+
+const neededHeight = addressOffset + addressHeight;
+
+if(neededHeight > boxH){
+boxH = neededHeight + fs(0.03);
+
+
+}
+const y = c.height - boxH;
+/* ===== NỀN ===== */
+
+const g = ctx.createLinearGradient(x,y,x,y+boxH);
+g.addColorStop(0,"rgba(70,100,40,0.85)");
+g.addColorStop(1,"rgba(90,130,50,0.70)");
+
+ctx.fillStyle = g;
+roundRect(ctx,x,y,boxW,boxH,fs(0.012));
+function wrapText(ctx,text,x,y,maxWidth,lineHeight){
+
+const words = text.split(" ");
+let line="";
+
+for(let n=0;n<words.length;n++){
+
+let testLine=line+words[n]+" ";
+let metrics=ctx.measureText(testLine);
+let testWidth=metrics.width;
+
+if(testWidth>maxWidth && n>0){
+
+ctx.fillText(line,x,y);
+line=words[n]+" ";
+y+=lineHeight;
+
+}else{
+
+line=testLine;
+
+}
+
+}
+
+ctx.fillText(line,x,y);
+
+}
+/* ===== LOGO ===== */
+
+
+
+if(logo.src){
+
+ctx.drawImage(
+logo,
+x + boxW*0.01,
+y + boxH*0.04,
+logoSize,
+logoSize
+);
+
+/* vị trí text */
+
+const textX = x + boxW*0.01 + logoSize + boxW*0.03;
+
+/* TITLE 1 */
+
+ctx.textAlign="left";
+ctx.fillStyle = "#FFD84D";
+ctx.font = `bold ${fs(0.028)}px Roboto`;
+
+const titleY = y + boxH*0.04 + fs(0.02);
+
+ctx.fillText(title1,textX,titleY);
+
+/* TITLE 2 */
+
+ctx.fillStyle = "#FFFFFF";
+ctx.font = `${fs(0.024)}px Roboto`;
+
+ctx.fillText(title2,textX,titleY + fs(0.04));
+
+}
+
+
+
+/* ===== LINE ===== */
+
+const lineY = y + logoSize + fs(0.05);
+
+ctx.strokeStyle="#FFC107";
+ctx.lineWidth=fs(0.003);
+
+const left = x + boxW*0.03;
+const right = x + boxW*0.97;
+
+ctx.beginPath();
+ctx.moveTo(left, lineY);
+ctx.lineTo(right, lineY);
+ctx.stroke();
+/* ===== ARROW ===== */
+
+ctx.fillStyle="#FFC107";
+ctx.font=`${fs(0.02)}px monospace`;
+
+const arrowChar = ">";
+const arrowWidth = ctx.measureText(arrowChar).width;
+
+const arrowCount = Math.floor((right - left) / arrowWidth);
+
+const arrowText = arrowChar.repeat(Math.min(arrowCount,60));
+
+ctx.fillText(
+arrowText,
+left,
+lineY + fs(0.018)
+);
+const arrowY = lineY + fs(0.02);
+/* ===== TIME ===== */
+
+ctx.fillStyle="#FFD84D";
+ctx.font=`bold ${fs(0.085)}px "Roboto Condensed"`;
+
+const timeY = arrowY + fs(0.06);
+
+const timeX = x + boxW*0.03;
+
+ctx.save();
+
+ctx.translate(timeX, timeY);
+
+/* giảm chiều ngang chữ */
+
+ctx.scale(0.66,1);
+
+ctx.fillText(
+time.value,
+0,
+0
+);
+
+ctx.restore();
+
+/* ===== DATE ===== */
+
+ctx.fillStyle="#FFFFFF";
+ctx.font=`${fs(0.021)}px Roboto`;
+
+const dateText = weekday.value + ", " + date.value;
+
+ctx.textAlign="left";
+
+ctx.fillText(
+dateText,
+x + boxW*0.40,
+timeY
+);
+
+/* ===== ADDRESS BAR ===== */
+
+ctx.fillStyle = "#FFD84D";
+
+const addressX = x + boxW*0.03;
+const addressY = timeY + fs(0.03);   // vị trí địa chỉ
+
+ctx.fillRect(
+addressX,
+addressY - fs(0.02),
+fs(0.006),
+fs(0.01)
+);
+
+/* ===== ADDRESS ===== */
+
+ctx.fillStyle = "#FFFFFF";
+ctx.font = `${fs(0.026)}px Roboto`;
+
+wrapText(
+ctx,
+address.value,
+addressX + fs(0.015),
+addressY,
+boxW*0.85,
+fs(0.035)
+);
+ }
 function isIOS(){
  return /iPhone|iPad|iPod/i.test(navigator.userAgent);
 }
@@ -1297,8 +1603,8 @@ document.addEventListener("pointerup",()=>{
 
       <!-- SUCCESS -->
       <div id="godSuccess" class="god-state" style="display:none;">
-          <div class="god-success"> Chúc Mừng Bạn </div>
-	<div class="god-success">Ảnh đã được tạo thành công</div>	
+          <div class="god-success"> Ảnh đã tạo thành công </div>
+	<div class="god-success">Tạo lại nếu font chữ chưa đẹp</div>	
           <button class="god-btn" onclick="closeGod()">OK</button>
       </div>
 
