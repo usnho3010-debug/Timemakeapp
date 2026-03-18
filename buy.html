@@ -161,7 +161,7 @@ function startChecking(email){
       if(res.paid){
         clearInterval(checkTimer);
         document.getElementById("qrPopup").style.display="none";
-        alert("🎉 Thanh toán thành công! KEY đã gửi về email.");
+        alert("🎉 Thanh toán thành công! KEY đã gửi về email.\n📩 Nếu chưa nhận được, vui lòng kiểm tra thư nháp hoặc spam.");
       }
     });
 
